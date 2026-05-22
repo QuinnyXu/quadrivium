@@ -1,0 +1,83 @@
+﻿=== Pre-2022 era-B Q15/Q16 sanity check ===
+  2010: 0 Q15/Q16 rows
+  2012: 0 Q15/Q16 rows
+  2015: 0 Q15/Q16 rows
+  2017: 0 Q15/Q16 rows
+  2019: 0 Q15/Q16 rows
+  2020: 0 Q15/Q16 rows
+  2021: 0 Q15/Q16 rows
+
+=== 2024 full questionnaire_no inventory ===
+  183 distinct: ['01.1', '01.a', '01.b', '01.c', '01.d', '01.e', '01.f', '01.g', '02.a', '02.b', '02.c', '02.d', '02.e', '02.f', '03', '04', '05', '06.a', '06.b', '06.c', '06.d', '07.a', '07.b', '07.c', '07.d', '07.e', '08.a', '08.b', '08.c', '08.d', '08.e', '09A', '09B01', '09B02', '09B03', '09B04', '09B05', '09B06', '09B07', '09B08', '09B09', '09B10', '09C01', '09C02', '09C03', '09C04', '09C05', '09D01', '09D02', '09D03', '09D04', '09D05', '09D06', '09E', '09F01', '09F02', '09F03', '09F04', '09F05', '09F06', '09G', '09H01', '09H02', '09H03', '09H04', '09H05', '09H06', '09I', '09J01', '09J02', '09J03', '09J04', '09J05', '09J06', '09J07', '09J08', '09J09', '09K', '10', '11A', '11B01', '11B02', '11B03', '11B04', '11B05', '11B06', '11B07', '11B08', '11B09', '11B10', '11C01', '11C02', '11C03', '11C04', '11C05', '11D01', '11D02', '11D03', '11D04', '11D05', '11D06', '11E', '11F01', '11F02', '11F03', '11F04', '11F05', '11F06', '11G', '11H01', '11H02', '11H03', '11H04', '11H05', '11H06', '11I', '11J01', '11J02', '11J03', '11J04', '11J05', '11J06', '11J07', '11J08', '11J09', '11K', '12.a', '12.b1', '12.b2', '12.c', '12.d', '12.e', '12.f', '13', '14A', '14B01', '14B02', '14B03', '14B04', '14B05', '14B06', '14B07', '14B08', '14B09', '14B10', '14C01', '14C02', '14C03', '14C04', '14C05', '14D01', '14D02', '14D03', '14D04', '14D05', '14D06', '14E', '14F01', '14F02', '14F03', '14F04', '14F05', '14F06', '14G', '14H01', '14H02', '14H03', '14H04', '14H05', '14H06', '14I', '14J01', '14J02', '14J03', '14J04', '14J05', '14J06', '14J07', '14J08', '14J09', '14K', '15', '16']
+
+=== 2024 personnel-related question labels (any questionnaire_no) ===
+  qno='15'  question='Headcount of personnel'
+  qno='16'  question='FTEs'
+
+=== Per-year Q15/Q16 microdata structure ===
+=== 2020: 0 total Q15/Q16 microdata rows ===
+  (no Q15/Q16 rows present in 2020)
+
+=== 2021: 0 total Q15/Q16 microdata rows ===
+  (no Q15/Q16 rows present in 2021)
+
+=== 2022: 4788 total Q15/Q16 microdata rows ===
+  Q15: 4 distinct (question, row, column) combos
+    questions (1): ['Headcount of personnel']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+  Q16: 4 distinct (question, row, column) combos
+    questions (1): ['FTEs']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+
+=== 2023: 4972 total Q15/Q16 microdata rows ===
+  Q15: 4 distinct (question, row, column) combos
+    questions (1): ['Headcount of personnel']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+  Q16: 4 distinct (question, row, column) combos
+    questions (1): ['FTEs']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+
+=== 2024: 5099 total Q15/Q16 microdata rows ===
+  Q15: 4 distinct (question, row, column) combos
+    questions (1): ['Headcount of personnel']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+  Q16: 4 distinct (question, row, column) combos
+    questions (1): ['FTEs']
+    rows (1 distinct):
+      - 'Total'
+    columns (4 distinct):
+      - 'Researchers'
+      - 'Support Staff'
+      - 'Technicians'
+      - 'Total'
+

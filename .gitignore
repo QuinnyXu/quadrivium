@@ -1,0 +1,49 @@
+# Project root .gitignore.
+# Per-directory rules live in `data/raw/.gitignore` and friends.
+
+# Upstream NSF bundle — not redistributed via git, see data/raw/MANIFEST.md.
+NSF_HERD.zip
+
+# Inspection / spike scratch — generalized rule.
+_tmp_*/
+
+# Claude Code local/personal settings. Agent .md files under .claude/agents/
+# track separately and define the project's panel.
+.claude/
+
+# Pytest cache.
+.pytest_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Build / package
+build/
+dist/
+*.egg-info/
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# DuckDB / parquet scratch (real harmonized parquets live under data/harmonized/
+# and are tracked-or-not on a case-by-case basis, set in their own .gitignore)
+*.duckdb
+*.duckdb.wal
+
+# DST Table Builder reference exports (HD 2.4 precondition working data).
+data/reference/dst-table-builder/precondition_export_*.csv

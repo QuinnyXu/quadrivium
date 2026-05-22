@@ -1,0 +1,180 @@
+# Table Builder Query Parameter Sidecar — FY 2024
+#
+# Source-of-truth schema lives in docs/methods_notes/herd_panel_etl_scoping.md
+# §2(d.2):192. This file is the materialized FY 2024 sidecar from the
+# template at data/reference/dst-table-builder-FY{YEAR}-query.yaml.template.
+#
+# Materialized 2026-05-21 at HD 2.4.g entry sub-action continuation
+# (Skipper). The Maintainer drove the Table Builder UI 2026-05-21,
+# landed the FY 2024 grid anchor CSV, and surfaced the empirical
+# substrate finding documented in the `notes` block below.
+#
+# Filename: aligned to scoping doc §2(d.2):190 convention
+# `dst-table-builder-FY{year}-query.yaml` per maintainer disposition
+# locked 2026-05-21 (re-shape pass, step 2). The earlier
+# maintainer-instruction filename `dst-table-builder-FY2024.yaml`
+# (no `-query` suffix) was renamed via `git mv` 2026-05-21; all
+# repo cross-references updated in the same pass.
+#
+# Drift between this sidecar and the §2(d.2):192 schema is a CI
+# concern — fix here, propagate to the schema, or vice versa.
+
+sidecar_id: dst-table-builder-FY2024-query
+sidecar_name: "DST Table Builder query for FY 2024 institution × discipline × source-class anchor"
+authored_at: "2026-05-21"
+authored_by: "Skipper (HD 2.4.g entry sub-action continuation, 2026-05-21)"
+
+csv_snapshot:
+  path: "data/reference/dst-table-builder/dst-table-builder-FY2024.csv"
+  sha256: "e0fc1f7b08f32f8963463ba591e18a188fbfc9d9f4584f2ffc50778ef46738a6"
+  access_date: "2026-05-21"
+
+tool_source:
+  name: "NSF NCSES Table Builder"
+  url: "https://ncsesdata.nsf.gov/builder/herd"
+
+# -- Query parameters (locked at HD 2.4.g entry 2026-05-20; materialized 2026-05-21) -----
+#
+# Cohort: HD 2.1.b residual report's substituted top-10 cohort. Preserves
+# cohort continuity per `docs/methods_notes/herd_panel_etl_scoping.md` §2(b)
+# (Branch A "the same cohort established at HD 2.1.b for
+# `validation/reports/era_reconciliation_2008_2011.md`"). Raw rank-by-FY-2008
+# top-10 drops UMich/UWashington/PennState/UMinnesota for missing era-B
+# 2009-2011 rows; substituted in Stanford (rank 9) and MIT (rank 10) to
+# preserve a continuously-reporting cohort across the era boundary.
+#
+# Disciplines: Engineering (anchor per CLAUDE.md §1) + Life sciences +
+# Physical sciences (two contrastive funding-source-mix axes — HHS-dominated
+# vs. NSF/DOE-distributed). Locked at scoping doc §2(b).
+#
+# Source classes: federal + nonfederal (gating cells). all_source optional
+# (reconciliation check against the era-B reconstruction rule).
+
+query_parameters:
+  dataset: HERD
+  fiscal_year: 2024
+
+  institutions:
+    - {id: "029977", name: "Johns Hopkins University"}
+    - {id: "001319", name: "University of California, San Francisco"}
+    - {id: "003895", name: "University of Wisconsin Madison"}
+    - {id: "001315", name: "University of California, Los Angeles"}
+    - {id: "001317", name: "University of California, San Diego"}
+    - {id: "002920", name: "Duke University"}
+    - {id: "003378", name: "University of Pennsylvania"}
+    - {id: "008802", name: "Ohio State University all campuses"}
+    - {id: "001305", name: "Stanford University"}
+    - {id: "002178", name: "Massachusetts Institute of Technology"}
+
+  disciplines: [Engineering, "Life sciences", "Physical sciences"]
+
+  source_class_breakdown: [federal, nonfederal]   # all_source reconciliation cells optional
+
+  additional_filters:
+    standard_form_only: false   # locked default = all-respondents (matches era-A direct read and era-B Q9+Q11 reconstruction)
+
+  output_format: csv
+
+# -- Regime provenance ------------------------------------------------------
+
+regime_provenance:
+  publication_regime_at_access: "standard FY 2024 Table Builder export"
+  anchor_classification: "Table-Builder-only (FY 2024 DST contracted from 86 PDFs to 55 per CLAUDE.md §6 HD 2.4.a)"
+  pdf_alternative_available: false
+  pdf_alternative_path: null
+
+# -- Cold-reader instruction (UI navigation hazard, 2026-05-21) -------------
+#
+# Receipt-level reproducer guidance for the §2(d.2) tier-(b) re-verification
+# path: a cold reader (or future-self) walking the `query_parameters` block
+# above to re-issue this query against the live NSF NCSES Table Builder must
+# follow the navigation steps below to land in the all-respondents grid the
+# staged CSV snapshot anchors. Headline-level claims (the staged CSV remains
+# canonical; the tier-(a) snapshot is the reproducibility contract) live in
+# the methods note; this block is the receipt the methods-note footnote
+# cross-references per the §6 receipt/headline split (CLAUDE.md §6
+# methods-note voice lock 2026-05-01).
+
+cold_reader_instruction:
+  tool_url: "https://ncsesdata.nsf.gov/builder/herd"
+  correct_measure_path:
+    - "R&D Expenditures for All Institutions"
+    - "By Broad Field and Federal and Nonfederal Sources"
+  navigation_hazard: >
+    Detailed-field × standard-form-only coupling: selecting the
+    "Detailed Field of Study" dimension inside the Table Builder UI forces
+    the respondent class to standard-form-only, which is NOT the
+    all-respondents grid this anchor expects. The Branch A all-respondents
+    grid requires deselecting "Detailed Field of Study" and reading the
+    broad-field rollups (Engineering / Life sciences / Physical sciences)
+    at the institution × source-class grain. Reproducers who walk this
+    YAML's query_parameters block but land in the standard-form-only
+    detailed-field view get a different cell set than the staged snapshot.
+  reproducibility_contract: >
+    The staged CSV snapshot at csv_snapshot.path remains the canonical
+    anchor per scoping doc §2(d.2) tier-(a). Live-tool re-querying is
+    tier-(b) cross-check only; live-tool divergence from the snapshot
+    (e.g., NSF evolves the Table Builder UI past the navigation path
+    captured here) does not break the deposit reproducibility contract.
+  cross_references:
+    panel_skipper_writeup: >
+      PANEL_SKIPPER.md §8 entry dated 2026-05-21 (HD 2.4.g entry
+      continuation), Finding 1 — full UI navigation hazard write-up
+      including the detailed-field × standard-form-only coupling
+      diagnosis.
+    methods_note_footnote: >
+      docs/methods_notes/reconstructive_harmonization.md §6 footnote
+      cross-references this `cold_reader_instruction` block as the
+      receipt for the navigation hazard.
+
+# -- Empirical substrate finding (HD 2.4.g entry continuation, 2026-05-21) --
+#
+# The headline lives in `docs/methods_notes/reconstructive_harmonization.md`
+# §6 (cold-reader voice, methods-note voice per CLAUDE.md §6 lock 2026-05-01);
+# the receipt lives here per the headline/receipt split.
+
+notes:
+  empirical_grid_composition:
+    nominal_cell_count: 60
+    substantive_cell_count: 58
+    structural_absences: 2
+    description: >
+      The FY 2024 export contains 58 substantive cells, not the nominal 60.
+      UCSF (inst_id 001319) is missing both Engineering cells (federal and
+      nonfederal). Diagnosis: UCSF is a health-sciences-only institution
+      with no Engineering school; UC system Engineering R&D lives at
+      Berkeley, San Diego, Los Angeles, Irvine, and Davis, not San
+      Francisco. The cell absence is structural (no Engineering substrate
+      at this institution), not suppression or NCSES disclosure-rule
+      artifact.
+
+  substantive_cell_arithmetic: >
+    9 institutions × 6 cells (3 disciplines × 2 source classes) = 54
+    + UCSF × 4 cells (Life sciences + Physical sciences × federal + nonfederal) = 4
+    = 58 substantive cells.
+
+  disposition: >
+    Path A (locked 2026-05-21): accept the 58-cell empirical grid as the
+    anchor for HD 2.4.g verification; document the UCSF Engineering
+    structural absence honestly in the methods note and the scoping doc
+    §2(b) per-spot-year anchor table. Do not coerce the FY 2024 grid back
+    to a nominal 60-cell composition with imputed UCSF Engineering zeros —
+    structural absence at the substrate level is methodologically distinct
+    from a documented zero and should not be papered over.
+
+  cross_references:
+    scoping_doc_section: "docs/methods_notes/herd_panel_etl_scoping.md §2(b) (per-spot-year anchor table; 60 nominal / 58 substantive amendment 2026-05-21)"
+    methods_note_section: "docs/methods_notes/reconstructive_harmonization.md §6 (substrate-shape parallel to publication-regime drift)"
+    panel_skipper_entry: "PANEL_SKIPPER.md §8 entry dated 2026-05-21"
+    citations: "docs/source_documents/citations.md (FY 2024 row graduated 2026-05-21)"
+    reference_manifest: "data/reference/MANIFEST.md (FY 2024 CSV row added 2026-05-21)"
+
+# -- Cross-references -------------------------------------------------------
+
+cross_references:
+  scoping_doc: "docs/methods_notes/herd_panel_etl_scoping.md (§2(b) cohort and per-spot-year anchor table, §2(d.2) staging discipline, §2(e) regime-stability caveat)"
+  reference_manifest: "data/reference/MANIFEST.md"
+  citation: "docs/source_documents/citations.md (FY 2024 row graduated 2026-05-21)"
+  methods_note: "docs/methods_notes/reconstructive_harmonization.md §6 reproducibility paragraph"
+  verification_spike: "etl/spikes/panel_anchor_verify.py (HD 2.4.h; BLOCKED pending Vision Branch I/II/III scope-shape resolution for the historical-vintage anchors)"
+  verification_report: "validation/reports/panel_anchor_reconciliation.md (HD 2.4.h)"

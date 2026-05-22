@@ -1,0 +1,13 @@
+Tool URL: https://ncsesdata.nsf.gov/builder/herd
+Export 1 access timestamp: 2026-05-10 11:58 pm ET
+Export 2 access timestamp: 2026-05-10 11:58 pm ET
+Query parameters used (mirror of step 1/2):
+  dataset: HERD
+  fiscal_year: 2024
+  institutions: ['Johns Hopkins University (029977)']
+  disciplines: ['Engineering', 'Life sciences', 'Physical sciences']
+  source_classes: ['federal', 'nonfederal', ('all_source' if exposed)]
+  output_format: csv
+Any tool quirks observed:
+    - <e.g., "Table Builder added an export-time header line">
+    - <e.g., "discipline dropdown labeled 'R&D Field'">

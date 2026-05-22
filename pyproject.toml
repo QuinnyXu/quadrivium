@@ -1,0 +1,32 @@
+[project]
+name = "quadrivium"
+version = "0.1.0"
+description = "Open-source harmonization of U.S. higher-education survey data. HERD now; IPEDS, GSS, and other NCSES surveys on the roadmap."
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "duckdb==1.5.2",
+    "pypdf==6.10.2",
+]
+
+[tool.uv]
+# Exact-pin discipline: pyproject.toml dependencies use `==`, never ranges.
+# `uv.lock` is the authoritative pin for the full transitive graph and is
+# committed as a deposit artifact alongside the loader code.
+
+[dependency-groups]
+# Chart-build tooling. NOT runtime deposit deps: the deposit reproduces
+# harmonized data, not figures. Methods-note SVGs are build artifacts that
+# happen to ship in the same repo. Keeping these out of [project.dependencies]
+# preserves the rule that the deposit's runtime install pulls only the
+# minimum needed to rebuild the parquet panels.
+charts = [
+    "matplotlib==3.9.2",
+]
+
+# Dev tooling. pytest is not deposit runtime; it runs the test suite during
+# development. No `tests/` directory exists yet; group is reserved for when
+# the first HERD-side test is written.
+dev = [
+    "pytest==8.3.3",
+]

@@ -1,0 +1,14 @@
+# Raw upstream data is reconstructed per per-source `MANIFEST.md` files.
+# We do not commit the raw payload to git — too large, and in some cases
+# (NSF HERD zips, institutional faculty exports) we don't redistribute
+# the source-of-record inside the repo.
+#
+# Tracked files: this `.gitignore`, plus any `INVENTORY.md` / `MANIFEST.md`
+# at any depth under `data/raw/` (one per source-of-record subdirectory).
+# Everything else under `data/raw/` is local-only.
+
+*
+!*/
+!.gitignore
+!INVENTORY.md
+!MANIFEST.md

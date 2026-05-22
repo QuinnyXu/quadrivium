@@ -1,0 +1,72 @@
+﻿Wrote data\harmonized\herd_personnel.parquet (108,811 bytes)
+======================================================================
+herd_personnel.parquet sanity report (data\harmonized\herd_personnel.parquet)
+======================================================================
+Total rows: 14859
+
+--- Column types ---
+  institution_id                 VARCHAR
+  ncses_inst_id                  VARCHAR
+  ipeds_unitid                   VARCHAR
+  inst_name_long                 VARCHAR
+  year                           INTEGER
+  era                            VARCHAR
+  measure_type                   VARCHAR
+  personnel_function             VARCHAR
+  value                          DOUBLE
+  unit                           VARCHAR
+  source_questionnaire_no        VARCHAR
+  source_question_canonical      VARCHAR
+  source_question_raw            VARCHAR
+  source_file                    VARCHAR
+  notes                          VARCHAR
+
+--- Row counts by year × measure_type ---
+  2022  fte         n=2390
+  2022  headcount   n=2398
+  2023  fte         n=2486
+  2023  headcount   n=2486
+  2024  fte         n=2549
+  2024  headcount   n=2550
+
+--- Distinct personnel_function values ---
+  'researchers'
+  'support_staff'
+  'technicians'
+  'total'
+
+--- Distinct measure_type values ---
+  'fte'
+  'headcount'
+
+--- Distinct unit values ---
+  'fte_persons'
+  'persons'
+
+--- Distinct era values ---
+  'B'
+
+--- Distinct (source_questionnaire_no, source_question_raw, source_question_canonical) ---
+  qno='15'  raw='Headcount of personnel'  canonical='Headcount of research personnel'
+  qno='16'  raw='FTEs'  canonical='Full-time equivalents of research personnel'
+
+--- Institution coverage by year ---
+  2022  n_distinct_institutions=636
+  2023  n_distinct_institutions=661
+  2024  n_distinct_institutions=680
+
+--- Identifier coverage (era-B only; expect 0 NULLs) ---
+  null institution_id=0, ncses_inst_id=118, ipeds_unitid=728, inst_name_long=0
+
+--- Value column NULL/zero summary ---
+  total=14859, null=0, zero=0, min=0.1, max=24590.0
+
+--- Free-sum (NOT standard-form-filtered): value where personnel_function='total' ---
+  2022  fte         free_sum=        500,603  n_inst_rows=635
+  2022  headcount   free_sum=      1,037,272  n_inst_rows=636
+  2023  fte         free_sum=        518,383  n_inst_rows=661
+  2023  headcount   free_sum=      1,064,295  n_inst_rows=661
+  2024  fte         free_sum=        525,960  n_inst_rows=680
+  2024  headcount   free_sum=      1,086,850  n_inst_rows=680
+  NOTE: Phase 2 will apply the Table 26 standard-form filter ($1M+ FY23 R&D); free-sums above are upper bounds, not reconciliation candidates.
+

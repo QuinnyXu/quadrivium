@@ -1,0 +1,91 @@
+# Table Builder Query Parameter Sidecar — TEMPLATE
+#
+# Source-of-truth schema lives in docs/methods_notes/herd_panel_etl_scoping.md
+# §2(d.2):192. This file is the per-spot-year YAML sidecar TEMPLATE; at HD 2.4.g
+# full run, copy this template to:
+#   data/reference/dst-table-builder-FY2024-query.yaml
+#   data/reference/dst-table-builder-FY2017-query.yaml   (subject to item-2 substrate disposition)
+#   data/reference/dst-table-builder-FY2010-query.yaml   (subject to item-2 substrate disposition)
+#   data/reference/dst-table-builder-FY2008-query.yaml   (subject to item-2 substrate disposition)
+# and fill the {{TOKEN}} placeholders with values captured at staging time.
+#
+# Skipper's HD 2.4.g entry sub-action (2026-05-20) pre-populated this template
+# with the locked HD 2.1.b cohort, the canonical 3-discipline / 2-source-class
+# query parameters, and the regime-provenance scaffolding.
+#
+# Drift between this template and the §2(d.2):192 schema is a CI concern —
+# fix here, propagate to the schema, or vice versa.
+
+sidecar_id: dst-table-builder-FY{{YEAR}}-query
+sidecar_name: "DST Table Builder query for FY {{YEAR}} institution × discipline × source-class anchor"
+authored_at: "{{YYYY-MM-DD of staging}}"
+authored_by: "Skipper (HD 2.4.g)"
+
+csv_snapshot:
+  path: "data/reference/dst-table-builder-FY{{YEAR}}.csv"
+  sha256: "{{SHA-256 of the staged CSV, lowercase}}"
+  access_date: "{{YYYY-MM-DD}}"
+
+tool_source:
+  name: "NSF NCSES Table Builder"
+  url: "https://ncsesdata.nsf.gov/builder/herd"
+
+# -- Query parameters (locked at HD 2.4.g entry 2026-05-20) -----------------
+#
+# Cohort: HD 2.1.b residual report's substituted top-10 cohort. Preserves
+# cohort continuity per `docs/methods_notes/herd_panel_etl_scoping.md` §2(b)
+# (Branch A "the same cohort established at HD 2.1.b for
+# `validation/reports/era_reconciliation_2008_2011.md`"). Raw rank-by-FY-2008
+# top-10 drops UMich/UWashington/PennState/UMinnesota for missing era-B
+# 2009-2011 rows; substituted in Stanford (rank 9) and MIT (rank 10) to
+# preserve a continuously-reporting cohort across the era boundary.
+#
+# Disciplines: Engineering (anchor per CLAUDE.md §1) + Life sciences +
+# Physical sciences (two contrastive funding-source-mix axes — HHS-dominated
+# vs. NSF/DOE-distributed). Locked at scoping doc §2(b).
+#
+# Source classes: federal + nonfederal (gating cells). all_source optional
+# (reconciliation check against the era-B reconstruction rule).
+
+query_parameters:
+  dataset: HERD
+  fiscal_year: {{YEAR}}
+
+  institutions:
+    - {id: "029977", name: "Johns Hopkins University"}
+    - {id: "001319", name: "University of California, San Francisco"}
+    - {id: "003895", name: "University of Wisconsin Madison"}
+    - {id: "001315", name: "University of California, Los Angeles"}
+    - {id: "001317", name: "University of California, San Diego"}
+    - {id: "002920", name: "Duke University"}
+    - {id: "003378", name: "University of Pennsylvania"}
+    - {id: "008802", name: "Ohio State University all campuses"}
+    - {id: "001305", name: "Stanford University"}
+    - {id: "002178", name: "Massachusetts Institute of Technology"}
+
+  disciplines: [Engineering, "Life sciences", "Physical sciences"]
+
+  source_class_breakdown: [federal, nonfederal]   # all_source reconciliation cells optional
+
+  additional_filters:
+    standard_form_only: false   # set true if Table Builder exposes a standard-form filter and the verification grid contracts to standard-form population; locked default = all-respondents (matches era-A direct read and era-B Q9+Q11 reconstruction)
+
+  output_format: csv
+
+# -- Regime provenance ------------------------------------------------------
+
+regime_provenance:
+  publication_regime_at_access: "{{describe regime: e.g., 'FY 2024 DST contracted from 86 PDFs to 55; Tables 28–54 Table-Builder-only — per CLAUDE.md §6 HD 2.4.a Round 1 finding'}}"
+  anchor_classification: "{{one of: 'Table-Builder-only' | 'PDF-available-but-CSV-canonical-for-this-grid'}}"
+  pdf_alternative_available: {{true|false}}
+  pdf_alternative_path: "{{if applicable, e.g., 'data/reference/nsf26304-tab010.pdf'}}"
+
+# -- Cross-references -------------------------------------------------------
+
+cross_references:
+  scoping_doc: "docs/methods_notes/herd_panel_etl_scoping.md (§2(b) cohort, §2(d.2) staging discipline, §2(e) regime-stability caveat)"
+  reference_manifest: "data/reference/MANIFEST.md"
+  citation: "docs/source_documents/citations.md (Forthcoming Table Builder CSV snapshots section)"
+  methods_note: "docs/methods_notes/reconstructive_harmonization.md §6 reproducibility paragraph"
+  verification_spike: "etl/spikes/panel_anchor_verify.py (HD 2.4.h)"
+  verification_report: "validation/reports/panel_anchor_reconciliation.md (HD 2.4.h)"

@@ -1,0 +1,372 @@
+# Era-B Reconstruction Rule
+#
+# Source of truth for the cross-question summation that reconstructs era-B
+# all-source field-level R&D totals from Q9 (federal) + Q11 (nonfederal)
+# fragments within era B (2010-2024). Consumed by `etl/build_herd_panel.py`
+# (HD 2.4); lifted verbatim into `docs/methods_notes/reconstructive_harmonization.md`
+# Appendix B (HD 2.1.i).
+#
+# Co-authored with `crosswalks/question_map.csv` (long-format detail). The
+# YAML carries the rule's overall narrative + dispositions + non-bridge
+# clause; the CSV carries one row per (era, year_range, question) with
+# per-question rationale. Both must agree on era_role and
+# contributes_to_all_source_total for every question this YAML names.
+#
+# Authored: HD 2.1.b-yaml, 2026-05-01.
+
+rule_id: era_b_reconstruction_v1
+rule_name: "Era-B all-source field-level reconstruction (Q9 + Q11)"
+authored_at: "2026-05-01"
+authored_by: "Skipper (HD 2.1.b-yaml)"
+
+scope:
+  era: B
+  year_range: [2010, 2024]
+  unit: kUSD_current
+  grain: "(institution_id, year, discipline_fine)"
+  bridges_to_era_a: false
+  discontinuity_at: 2010
+  discontinuity_characterization_doc: "docs/methods_notes/reconstructive_harmonization.md"
+  discontinuity_characterization_section: "slot 2 four-bar decomposition"
+
+# -- The rule itself --------------------------------------------------------
+#
+# For era B (2010-2024), the reconstructed all-source field-level total is:
+#
+#     all_source_total(field, year)
+#         = Q9.column['Total'](field, year)        # federal, all-agencies
+#         + Q11.column['Total'](field, year)       # nonfederal, all-sources
+#
+# Both components use column='Total' (the rolled column that sums across
+# the agency / nonfederal-source axis). The rule sums across the federal /
+# nonfederal axis because that is the axis era-B fragmented; it does NOT
+# sum across the discipline axis (each (institution, year, field) row is
+# reconstructed independently).
+#
+# This rule is era-B-internal. It does NOT bridge to era-A's direct
+# `Expenditures by S&E field` total (1973-2009). See `non_bridge_clause`.
+
+components:
+
+  - role: all_source_total
+    formula: "Q9.column['Total'] + Q11.column['Total']"
+    components_in:
+      - question: "Federal expenditures by field and agency"
+        question_short: "Q9"
+        column: "Total"
+        fy24_guide_anchor: "page 5"
+        fy24_guide_quote: |
+          "Question 9A-K requested that institutions report the amount of
+          their R&D expenditures by field that was funded by federal agency
+          sources (i.e., the U.S. Departments of Agriculture, Defense,
+          Energy, and Health and Human Services; the National Aeronautics
+          and Space Administration [NASA]; NSF; and all other federal
+          agencies)."
+        question_map_csv_row: "B,2010-2024,Federal expenditures by field and agency"
+      - question: "Nonfederal expenditures by field and source"
+        question_short: "Q11"
+        column: "Total"
+        fy24_guide_anchor: "page 6"
+        fy24_guide_quote: |
+          "Question 11A-K requested that institutions report the amount of
+          their R&D expenditures by field that were funded by nonfederal
+          agency sources (i.e., state and local governments, businesses,
+          nonprofit organizations, institutional funds, and other)."
+        question_map_csv_row: "B,2010-2024,Nonfederal expenditures by field and source"
+    decision_rationale: |
+      Era B fragmented era-A's single `Expenditures by S&E field` question
+      (one all-source field-level total per row) into two source-class
+      questions: Q9 (federal) and Q11 (nonfederal). The era-B all-source
+      field-level total is the sum of the two. The FY24 Guide describes
+      each question's coverage but does not state the sum equation
+      explicitly; the equation is the contribution of this rule and the
+      methods-note headline.
+
+# -- Dispositions: questions that are NOT in the all-source component set --
+#
+# Each disposition block carries: the FY24 Guide page anchor, a one-sentence
+# rationale, and the CLAUDE.md §6 disposition number that locks it. All
+# four must agree with the corresponding `question_map.csv` rows.
+
+dispositions:
+
+  W1_q14_capitalized_equipment:
+    claude_md_anchor: "CLAUDE.md §6 disposition W1 (locked 2026-05-01)"
+    affects_question: "Capitalized R&D equipment expenditures by field"
+    affects_question_short: "Q14"
+    fy24_guide_anchor: "page 6"
+    fy24_guide_quote: |
+      "Question 14A-K requested that institutions report the portion of
+      their federal and nonfederal R&D expenditures by field that went
+      toward the purchase of capitalized R&D equipment."
+    era_role: "era-B-subset-of-Q9+Q11"
+    contributes_to_all_source_total: false
+    panel_disposition: |
+      Q14 is a subset of Q9+Q11 ("the portion of their federal and
+      nonfederal R&D expenditures... that went toward the purchase of
+      capitalized R&D equipment"), not a separate component. Including Q14
+      would double-count the equipment portion already in Q9+Q11. Q14 maps
+      to a parallel `expenditure_type='r&d_equipment'` row in the
+      harmonized panel (parallel to era-A Item 3, Current Fund Research
+      Equipment Expenditures by Field, FY24 Guide page 19), not to a
+      component of the all-source rule.
+    question_map_csv_row: "B,2010-2024,Capitalized R&D equipment expenditures by field"
+
+  W2_q4_q5_carveouts:
+    claude_md_anchor: "CLAUDE.md §6 disposition W2 (locked 2026-05-01)"
+    affects_questions:
+      - question: "Medical school R&D expenditures"
+        question_short: "Q4"
+      - question: "Clinical trial R&D expenditures"
+        question_short: "Q5"
+    fy24_guide_anchor: "page 5"
+    fy24_guide_quote: |
+      "Question 4 asked how much of the total R&D expenditures was expended
+      for R&D projects in the institution's medical school."
+      "Question 5 asked how much of the total R&D expenditures was expended
+      for clinical trial R&D."
+    era_role: "era-B-attribute"
+    contributes_to_all_source_total: false
+    panel_disposition: |
+      Q4 and Q5 are carve-outs from the institution-year R&D total ("how
+      much OF the total R&D expenditures..."), not separate components.
+      Including either in the all-source rule would double-count. Both map
+      to institution-year attribute flags (`med_school_share`,
+      `clinical_trials_share`) on the harmonized panel, not to parallel
+      rows. Q5 has a raw-question-label drift in the HERD CSV files
+      (CSV uses "Clinical trials"; FY24 Guide canonical is "Clinical trial
+      R&D expenditures") — the raw_question_label column on
+      `crosswalks/question_map.csv` carries the HERD CSV form; build code
+      joins on raw_question_label when populated.
+    question_map_csv_rows:
+      - "B,2010-2024,Medical school R&D expenditures"
+      - "B,2010-2024,Clinical trial R&D expenditures"
+
+  W3_arra_within_federal:
+    claude_md_anchor: "CLAUDE.md §6 disposition W3 (locked 2026-05-01)"
+    affects_question: "ARRA federally financed R&D expenditures"
+    affects_question_short: "ARRA (no fixed Q-number; renumbered FY 2015 removal)"
+    fy24_guide_anchor: "page 4"
+    fy24_guide_quote: |
+      "In FY 2015, the question asking for information about federally
+      financed R&D expenditures from American Recovery and Reinvestment Act
+      (ARRA) funds was removed, and all subsequent questions were
+      renumbered."
+    era_role: "era-B-subset-of-Q9+Q11"
+    contributes_to_all_source_total: false
+    panel_disposition: |
+      ARRA dollars are a within-federal sub-stream of Q9, not a parallel
+      federal component (case (a) per §2.3 W3). Build under case-(a)
+      assumption: no ARRA add to the summation rule. The Guide phrasing
+      "removed, and all subsequent questions were renumbered" supports
+      case-(a); empirical confirmation comes from the HD 2.1.b residual
+      analysis (institution-year reconciliation 2010-2014 vs. published
+      NSF federal totals). If a non-pre-documented residual reopen fires
+      that traces to ARRA, the residual-reopen path (§3.3) revisits this
+      disposition. Coverage 2010-2014; question removed FY 2015.
+    question_map_csv_row: "B,2010-2014,ARRA federally financed R&D expenditures"
+
+  W4_federal_column_total:
+    claude_md_anchor: "CLAUDE.md §6 disposition W4 (locked 2026-05-01)"
+    affects_question: "Federal expenditures by field and agency"
+    affects_question_short: "Q9"
+    fy24_guide_anchor: "page 5"
+    panel_disposition: |
+      Era A reports federal R&D as a single rolled `column='Federal'` on
+      `Expenditures by S&E field`; era B (Q9) replaces it with seven agency
+      columns (DOD, DOE, HHS, NASA, NSF, USDA, Other agencies) plus a
+      rolled `Total`. The all-source rule uses `column='Total'` from Q9
+      (and Q11), which sidesteps the agency-rollup question entirely.
+      Agency-level reconstruction is a separate (federal-only) methods-note
+      section, not part of the all-source rule.
+    question_map_csv_row: "B,2010-2024,Federal expenditures by field and agency"
+
+# -- quality_flag propagation (HD 2.4 W4 lock, maintainer-greenlit 2026-05-09) -
+#
+# Reconstructed all_source rows from Q9+Q11 carry a quality_flag in the
+# harmonized panel schema (one of {reported, imputed, estimated,
+# unspecified_zero}). Propagation rule and ordering are locked here so
+# `etl/build_herd_panel.py` Stage 6 (HD 2.4.c) and any future consumer can
+# defend the choice from the YAML alone.
+#
+# Authored: HD 2.4 W4 round, 2026-05-09. Maintainer-greenlit 2026-05-09
+# alongside the semantic clarification below.
+
+quality_flag_propagation:
+
+  rule_name: "Least-good-flag-wins with row-absence not propagating"
+  authored_at: "2026-05-09"
+  authored_by: "Skipper (HD 2.4 W4 round)"
+  locked_by: "Maintainer greenlight 2026-05-09"
+
+  ordering:
+    # Worst -> best. The reconstructed all_source row's quality_flag is the
+    # least-good (leftmost in this list) of the present-side component flags.
+    - unspecified_zero
+    - estimated
+    - imputed
+    - reported
+
+  ordering_rationale: |
+    Position-by-position justification, Guide-grounded:
+
+    1. `reported` (best) - institution's own numeric statement, raw `status`
+       blank in the source HERD CSV. No NSF intervention. Highest provenance
+       trust. Dominant case (~93-97% of in-scope Total-column rows per
+       `validation/reports/herd_null_characterization_findings.md`).
+
+    2. `imputed` (second) - raw `status='i'`. NSF-imputed numeric value with
+       documented carryforward methodology (FY24 Guide page 10). Auditable
+       methodology, NSF-sourced value. Numeric value carries more
+       methodological backing than `estimated` because the carryforward
+       provenance is named explicitly. ~3% of FY 2024 in-scope rows.
+
+    3. `estimated` (third) - raw `status='e'`, era-A only (FY24 Guide page
+       25). NSF-supplied numeric value but with more diffuse methodological
+       backing - "estimated by NCSES" without a named carryforward source.
+       Effectively retired (1 occurrence in entire FY 2008 file, 0 at
+       column='Total' in scope). Position below `imputed` reflects that
+       `imputed` carries more specific NSF methodological provenance.
+
+    4. `unspecified_zero` (worst) - the fidelity flag for the FY 2017
+       status='u' rows (244 occurrences, non-Total columns, `data='0'`
+       empirically, Guide-undocumented). Position lowest because the flag
+       itself is OUTSIDE the FY24 Guide's documented codeset - the value is
+       empirically zero but the encoding is not auditable against the Guide.
+       Less trustworthy than even `estimated` (which is at least a
+       Guide-documented code, however retired).
+
+  semantic_clarification: |
+    `unspecified_zero` is reserved for the FY 2017 status='u' fidelity flag
+    only. It does NOT flag row-absence at the (institution, year,
+    discipline_fine, source_class) leaf grain.
+
+    Per FY24 Guide pages 8 and 23, raw HERD CSVs encode genuine zeros at
+    leaf cells via row-absence (only nonzero responses produce a leaf row;
+    total rows always emit). Row-absence IS the institution's
+    documented-zero statement, not a missing-data signal. Therefore
+    row-absence is handled by COALESCE(value, 0) arithmetic in the FULL
+    OUTER JOIN (Stage 6 of `etl/build_herd_panel.py`) and contributes NO
+    flag to the propagation - the reconstructed row inherits the present
+    side's flag unmodified when one side is row-absent.
+
+    Worked example: Q9 row-absent + Q11 reported -> reconstructed
+    all_source carries quality_flag='reported' (not 'unspecified_zero',
+    not any blended degraded flag). Semantic claim: this all_source value
+    is the institution's reported nonfederal R&D plus an
+    institution-documented zero federal R&D. The institution-reported
+    character of the value survives the reconstruction.
+
+    Conversely: Q9 imputed + Q11 reported -> reconstructed all_source
+    carries quality_flag='imputed' (least-good of `imputed` and
+    `reported`). The numeric value contains an NSF imputation; the flag
+    says so.
+
+  fy24_guide_anchors:
+    row_absence_as_zero:
+      pages: [8, 23]
+      relevance: "Row-presence-only-when-nonzero encoding for leaf cells; total rows always emit."
+    imputed_code:
+      page: 10
+      relevance: "Documents `status='i'` as NSF-imputed via prior-year carryforward."
+    estimated_code:
+      page: 25
+      relevance: "Documents `status='e'` as NSF-estimated, era-A only."
+    unspecified_zero_status_u:
+      pages: [10, 25]
+      relevance: |
+        FY 2017 status='u' is NOT in the FY24 Guide codeset. The encoding
+        is preserved for fidelity (244 rows, non-Total columns, all
+        `data='0'`) and flagged as Guide-vs-data drift. Investigation
+        deferred per `docs/hd_2_1_open_items.md`.
+
+  consumer_contract: |
+    Consumers of this rule (`etl/build_herd_panel.py` Stage 6, Stage 9
+    sanity assertions, downstream chart and reconciliation code) MUST:
+
+    1. Apply the ordering above when propagating flags from Q9 and Q11
+       components onto the reconstructed all_source row.
+    2. Treat row-absence as a zero contributor to value (COALESCE(v,0))
+       and as a NO-OP contributor to quality_flag (the present side's
+       flag passes through unmodified).
+    3. Emit `unspecified_zero` ONLY for rows whose raw `status='u'`
+       (case-folded via UPPER(status)='U' per HD 2.4.b round 1 lock).
+       The harmonized panel's Stage 9 sanity assertion enforces the
+       three-tier corrected baseline (locked 2026-05-10 PM revising
+       the 2026-05-09 original; Vision consultation Option δ + γ-allow;
+       see `validation/reports/herd_null_characterization_findings.md`
+       §7 for the corrected baseline + §8 for the assertion design):
+
+       (a) Era-A `unspecified_zero` rows raise. Era-A does not emit
+           `status='u'` (verified empirically across 1973-2009 at
+           `etl/spikes/probe_status_c_codeset.py`).
+       (b) Era-B `unspecified_zero` rows in years outside 2010-2022
+           raise. FY 2023+ retired the encoding (zero occurrences in
+           both 2023 and 2024 standard-form raw files); resumption
+           warrants panel reconvene as a publication-regime change.
+       (c) Era-B 2010-2022 `unspecified_zero` rows are allowed per the
+           corrected empirical baseline (~4,000 raw rows across 13
+           years, 106 institutions; 9 panel-emitting rows at FY 2020
+           Q14 column='Total' / institution_id='003446').
+
+       If a future raw HERD file violates this corrected baseline, the
+       build fails loud and the operator dispositions the drift. The
+       codeset-extension vs. empirical-scope-adjustment distinction
+       (CLAUDE.md §6 codeset-extension policy) governs: empirical-scope
+       adjustments to existing enum values update documentation;
+       new enum values require Guide-documented anchor or panel-touch.
+
+  scoping_doc_anchor:
+    document: "docs/methods_notes/herd_panel_etl_scoping.md"
+    sections: ["§6.2 Stage 6", "§6.2 Stage 9", "§14.2"]
+
+# -- The non-bridge clause (load-bearing for downstream consumers) ----------
+
+non_bridge_clause:
+  bridges_to_era_a: false
+  statement: |
+    This rule is era-B-internal. It reconstructs era-B all-source field-
+    level totals from Q9+Q11 fragments for the years 2010-2024. It does
+    NOT bridge era-A direct totals (1973-2009, era-A `Expenditures by S&E
+    field`, column='Total') to era-B reconstructed totals. The era
+    boundary at 2010 is characterized as DECOMPOSED, not bridged: the
+    methods note (artifact #6) ships a four-bar decomposition (real growth
+    + definitional change incl. Q5 share + cohort expansion 690->896 +
+    bounded unmeasurable residual) that characterizes the boundary
+    quantitatively. The deposit ships two parallel reconstructed series
+    (era-A direct, era-B reconstructed) plus the decomposition; it does
+    NOT ship a single bridged series.
+
+    Methodological signature: per CLAUDE.md §1, Reconstructive
+    Harmonization means RECONSTRUCT what each era can support on its own
+    terms (era-A: direct read; era-B: Q9+Q11 sum), DECOMPOSE the boundary
+    (artifact #6 slot 2), and PUBLISH BOTH (parallel series, not bridged).
+    This rule is the reconstruction half of the (a) clause; the
+    decomposition methods-note section is the (b) clause.
+
+  framing_anchor:
+    claude_md_section: "§6 HD 2.1.b outcome (locked 2026-05-01) and §1 Reconstructive Harmonization"
+    methods_note_section: "docs/methods_notes/reconstructive_harmonization.md slot 2 four-bar decomposition"
+
+  consumer_contract: |
+    Consumers of this rule (HD 2.4 panel build, HD 2.7 reconciliation,
+    chart authors at HD 2.1.i and beyond) MUST treat era-A and era-B
+    series as parallel, not concatenated. Code that joins
+    era_a_value(disc, year<=2009) onto era_b_reconstructed(disc, year>=2010)
+    as a single time series is a contract violation against this clause.
+    The harmonized panel parquet preserves the era boundary as a column
+    (`era` in {'A','B'}); chart code reads both eras and renders them as
+    distinct series with the four-bar decomposition annotation.
+
+# -- Cross-references -------------------------------------------------------
+
+cross_references:
+  question_map_csv: "crosswalks/question_map.csv"
+  discipline_fine_csv: "crosswalks/discipline_fine.csv"
+  discipline_coarse_csv: "crosswalks/discipline_coarse.csv"
+  fy24_guide: "docs/source_documents/herd_fy24_guide.txt"
+  fy24_guide_pdf: "data/raw/herd/Guide To Herd Data Files FY24.pdf"
+  scoping_doc: "docs/hd_2_1_scoping.md"
+  residual_report: "validation/reports/era_reconciliation_2008_2011.md"
+  methods_note: "docs/methods_notes/reconstructive_harmonization.md"
+  panel_lock_record: "CLAUDE.md §6 (HD 2.1.b outcome subsection, locked 2026-05-01)"
