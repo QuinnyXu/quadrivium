@@ -248,22 +248,68 @@ def _scan_invalid_utf8_bytes(raw_bytes: bytes) -> list[dict]:
     return substitutions
 
 
-def _append_encoding_log(source_file: str, substitutions: list[dict]) -> None:
-    """Append substitution records to ``validation/reports/encoding_substitutions.csv``.
+# Per-process state for the encoding log. The panel build reads each raw CSV
+# multiple times (≈6 `load_year` call sites across stages) and the build may be
+# re-run; both duplicate substitution rows. Append mode (the prior behavior)
+# accumulated across runs unboundedly. We therefore (a) truncate the log on the
+# first write of each process and (b) dedup rows within the process, so the log
+# is a deterministic function of the input set — one row per distinct
+# (source_file, row, offset, byte) substitution, in first-seen order — and
+# byte-identical across re-runs. See PANEL_SKIPPER.md §8 HD 2.4.h.
+_encoding_log_initialized = False
+_encoding_log_seen: set[tuple] = set()
 
-    Creates parent directory and CSV header on first write. No-op if
-    ``substitutions`` is empty.
+
+def _reset_encoding_log_state() -> None:
+    """Reset per-process encoding-log state. Test hook; normal runs reset on
+    fresh interpreter start."""
+    global _encoding_log_initialized
+    _encoding_log_initialized = False
+    _encoding_log_seen.clear()
+
+
+def _append_encoding_log(source_file: str, substitutions: list[dict]) -> None:
+    """Write substitution records to ``validation/reports/encoding_substitutions.csv``.
+
+    Deterministic per build. The first write of the process truncates the file
+    and writes the header; subsequent writes append. Rows are deduplicated
+    within the process against ``_encoding_log_seen``, so the build's repeated
+    reads of the same raw file do not multiply rows. No-op if ``substitutions``
+    is empty or contributes no new rows. The committed log is therefore a
+    function of the input set only — byte-identical across re-runs.
+
+    Note: the personnel build reads only clean (UTF-8-valid) years and produces
+    no substitutions, so it never truncates this log. If a future build path
+    produced substitutions for a different input set, the first such write of
+    that process would re-truncate; the log reflects one process's input set.
     """
     if not substitutions:
         return
+    global _encoding_log_initialized
     path = ENCODING_LOG_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
-    new_file = not path.exists()
-    with path.open("a", newline="", encoding="utf-8") as f:
+    new_rows = []
+    for s in substitutions:
+        key = (
+            source_file,
+            s["row_number"],
+            s["byte_offset"],
+            s["original_bytes"],
+            s["latin1_character"],
+        )
+        if key in _encoding_log_seen:
+            continue
+        _encoding_log_seen.add(key)
+        new_rows.append(s)
+    if not new_rows:
+        return
+    mode = "a" if _encoding_log_initialized else "w"
+    with path.open(mode, newline="", encoding="utf-8") as f:
         writer = _csv.DictWriter(f, fieldnames=_ENCODING_LOG_FIELDS)
-        if new_file:
+        if not _encoding_log_initialized:
             writer.writeheader()
-        for s in substitutions:
+            _encoding_log_initialized = True
+        for s in new_rows:
             writer.writerow({"source_file": source_file, **s})
 
 
