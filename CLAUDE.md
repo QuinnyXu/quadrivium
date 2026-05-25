@@ -22,7 +22,7 @@ Agent definitions live under `.claude/agents/` and are gitignored as personal wo
 
 Quadrivium harmonizes U.S. higher-education survey data into reproducible analytical panels that a cold reader can use without misreading the methodological discontinuities in the underlying data.
 
-**Current scope.** NSF HERD (Higher Education Research and Development survey), FY 1972–2024. The financial panel (`data/harmonized/herd_panel.parquet`) covers FY 1973–2024 field-level R&D expenditure data across the 2010 instrument redesign; the personnel sibling (`data/harmonized/herd_personnel.parquet`) covers Q15 headcount + Q16 FTE for FY 2020 and FY 2022–2024; the Q4/Q5 attribute sibling (`data/harmonized/herd_panel_attributes.parquet`) carries medical-school and clinical-trials share / value columns.
+**Current scope.** NSF HERD (Higher Education Research and Development survey), FY 1972–2024. The financial panel (`data/harmonized/herd_panel.parquet`) covers FY 1975–2024 field-level R&D expenditure data across the 2010 instrument redesign; the personnel sibling (`data/harmonized/herd_personnel.parquet`) covers Q15 headcount + Q16 FTE for FY 2020 and FY 2022–2024; the Q4/Q5 attribute sibling (`data/harmonized/herd_panel_attributes.parquet`) carries medical-school and clinical-trials share / value columns.
 
 **Roadmap.** IPEDS (Integrated Postsecondary Education Data System), NSF GSS (Survey of Graduate Students and Postdoctorates in Science and Engineering), and other NCSES surveys as the contribution-process matures. Each migration applies the Reconstructive Harmonization methodology to that survey's discontinuities; the schema and validation patterns adapt to the survey's structure, the methodology does not.
 
@@ -95,7 +95,7 @@ for every year 2010–2024
 The rule is era-B-internal (it recovers era-B all-source totals within era B). It is NOT a bridge across the era boundary. The full rule with FY24 Guide anchors lives in `crosswalks/era_b_reconstruction_rule.yaml`.
 
 ### 2010 era-boundary decomposition (clause (b))
-The deposit ships two parallel reconstructed series (era-A 1973–2009 direct, era-B-reconstructed 2010–2024 via the rule above) plus the methods-note decomposition characterizing the boundary itself. The 2008→2011 institution-total residual decomposes into:
+The deposit ships two parallel reconstructed series (era-A 1975–2009 direct, era-B-reconstructed 2010–2024 via the rule above) plus the methods-note decomposition characterizing the boundary itself. The 2008→2011 institution-total residual decomposes into:
 
 - **Real growth** (~26% national, FY2008→FY2011, current dollars; diagnostic 3).
 - **Definitional change at the boundary** — era-B totals include items era-A totals didn't (FY24 Guide page 14 names clinical trials and training grants).
