@@ -3246,8 +3246,16 @@ def build_panel(
 
     print("Stage 10 — parquet write...")
     t0 = time.perf_counter()
+    # Deterministic row order before the parquet COPY. Without an explicit
+    # ORDER BY, DuckDB emits the assembled rows in a run-varying order, so the
+    # parquet was byte-non-deterministic across rebuilds (identical content,
+    # different SHA-256) — a §3 reproducibility-contract gap surfaced at
+    # HD 2.4.h boundary 3. ORDER BY ALL imposes a total order over every
+    # column, so the bytes become a function of the data alone. Applied to the
+    # panel only; the attribute table is already byte-deterministic and is left
+    # untouched (its write below is unchanged).
     panel_path = write_parquet(
-        con.sql("SELECT * FROM _panel_assembled"), OUT_PATH, con
+        con.sql("SELECT * FROM _panel_assembled ORDER BY ALL"), OUT_PATH, con
     )
     attr_path = write_parquet(
         con.sql("SELECT * FROM _attr_assembled"), ATTR_OUT_PATH, con

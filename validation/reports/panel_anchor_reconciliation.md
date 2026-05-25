@@ -164,11 +164,11 @@ The reference implementation and its output are pinned at commit `e39ad4c`. The 
 
 | Artifact | SHA-256 |
 |---|---|
-| `data/harmonized/herd_panel.parquet` | `d6fe70118378107f1db4548b35bcb401547a2a87f78bd75235801dfd9c897b7f` |
+| `data/harmonized/herd_panel.parquet` | `196132459f07725ed2d863d748dd637640a76e77245f87f8bb72d8dfad0c6fcc` |
 | `data/reference/dst-table-builder/dst-table-builder-FY2024.csv` | `e0fc1f7b08f32f8963463ba591e18a188fbfc9d9f4584f2ffc50778ef46738a6` |
 | `etl/spikes/_out/panel_anchor_verify_FY2024.parquet` | `217e7937bb0847912b46134042cb0f43384887baaba6597543137725ffc7e41d` |
 
-Report authored against repository state `df84886`. The anchor CSV SHA-256 matches `data/reference/MANIFEST.md`. The spike re-asserts the verdict on every run; a divergence between a future panel build and this report's values is itself a finding — re-run the reproducer and compare against the SHA-256s above before treating the report as stale.
+The panel parquet SHA-256 reflects a deterministic re-serialization of the panel — a build row-ordering fix applied after the spike was committed at `e39ad4c` — whose content is identical to the e39ad4c-era panel; only the row order written to the file changed. Report authored against repository state `df84886`. The anchor CSV SHA-256 matches `data/reference/MANIFEST.md`. The spike re-asserts the verdict on every run; a divergence between a future panel build and this report's values is itself a finding — re-run the reproducer and compare against the SHA-256s above before treating the report as stale.
 
 ## References
 
