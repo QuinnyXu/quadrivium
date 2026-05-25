@@ -22,7 +22,7 @@ This is not a bridge across discontinuities. It is the discipline of making oper
 
 - **`data/harmonized/herd_panel.parquet`** — 50-year field-level R&D expenditure panel (FY 1975–2024), two parallel reconstructed series across the 2010 era boundary.
 - **`data/harmonized/herd_panel_attributes.parquet`** — institution-year Q4/Q5 attribute sibling: medical-school and clinical-trials share and value columns.
-- **`data/harmonized/herd_personnel.parquet`** — Q15 headcount + Q16 FTE personnel panel for FY 2020 + FY 2022–2024.
+- **`data/harmonized/herd_personnel.parquet`** — Q15 headcount + Q16 FTE personnel panel for FY 2022–2024 (the microdata-bearing years; NCSES Data Table 26 publishes institution totals for FY 2020–2024, but FY 2020–2021 are aggregate-only, with no per-institution microdata). Carries no `quality_flag` column — a documented imputation-provenance asymmetry with the financial panel (see [`docs/methods_notes/herd_panel_etl_scoping.md`](docs/methods_notes/herd_panel_etl_scoping.md) §12).
 
 Companion validation reports in `validation/reports/` carry the reconciliation against published NSF / NCSES ground truth.
 
