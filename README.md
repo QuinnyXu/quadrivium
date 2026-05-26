@@ -44,6 +44,14 @@ Raw NSF HERD zips are not redistributed via git. SHA-256 manifests in [`data/raw
 
 A cold reader with the lockfile, the raw zips named in `data/raw/MANIFEST.md`, and the NCSES reference PDFs in `data/reference/` reaches the same harmonized parquet bit-equivalently (modulo parquet writer determinism on a fixed input-and-code-version pair).
 
+### What ships in the deposit vs. what you fetch from NSF
+
+**Ships in the deposit** (tracked in git, CC-BY-4.0): the three harmonized parquets in `data/harmonized/` — SHA-256s pinned in [`data/harmonized/MANIFEST.md`](data/harmonized/MANIFEST.md) — plus the crosswalks, the methods notes, the validation reports, the NCSES reference PDFs (`data/reference/`), the lockfile, and the build scripts. You can use the harmonized panels directly, or rebuild them.
+
+**Fetched from NSF** (not redistributed): the 53 raw HERD year zips and 13 short-form zips. Their SHA-256s and download URLs are in [`data/raw/MANIFEST.md`](data/raw/MANIFEST.md); they are U.S. government work, staged by checksum rather than redistributed (the provenance-clean choice — the zip is the bit-identical artifact NSF shipped). A consumer rebuilding from raw obtains them from NSF's HERD archive.
+
+**The integrity round-trip:** raw-zip SHAs (NSF-fetched, `data/raw/MANIFEST.md`) → `uv sync` + build → harmonized-parquet SHAs (deposit-shipped, `data/harmonized/MANIFEST.md`). A consumer who fetches the raw zips, verifies them against `data/raw/MANIFEST.md`, runs `uv sync` and the build scripts, reproduces the harmonized SHAs in `data/harmonized/MANIFEST.md`. This round-trip is verified end-to-end from a clean checkout (the harmonized panel rebuilds to the exact pinned SHA, and the FY 2024 verification grid re-asserts 58/58 at +0.000%).
+
 Methods-note figures are not deposit runtime. To rebuild figures:
 
 ```bash
