@@ -19,6 +19,9 @@
     "survey methodology",
     "Reconstructive Harmonization"
   ],
+  "related_identifiers": [
+    { "identifier": "https://github.com/QuinnyXu/quadrivium", "relation": "isSupplementTo", "resource_type": "software" }
+  ],
   "description": "Reproducible analytical panels harmonizing NSF Higher Education Research and Development (HERD) survey data (FY 1972–2024) across the 2010 instrument redesign, using Reconstructive Harmonization: each era is reconstructed on its own terms, the era boundary is decomposed into named, quantified components (real growth, definitional change, population expansion, bounded residual), and both are published with documentation a cold reader can use without misreading the discontinuity. The deposit ships a 50-year field-level R&D expenditure panel (FY 1975–2024), a Q15/Q16 research-personnel panel (FY 2022–2024), and a Q4/Q5 attribute sibling, each validated against published NSF/NCSES ground truth.",
-  "notes": "Harmonized data artifacts are licensed CC-BY-4.0; the Python source code and lockfile are licensed MIT (see LICENSE in the repository). Concept-DOI-per-dataset scheme (HERD); the concept/version DOI relation is populated automatically by Zenodo at mint and is intentionally not hand-authored here. The repository URL (related identifier) and the minted DOI are filled at Stage 3 public release."
+  "notes": "Harmonized data artifacts are licensed CC-BY-4.0; the Python source code and lockfile are licensed MIT (see LICENSE in the repository). Concept-DOI-per-dataset scheme (HERD); the concept/version DOI relation is populated automatically by Zenodo at mint and is intentionally not hand-authored here. The minted DOI is filled at Stage 3 public release."
 }

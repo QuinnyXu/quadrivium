@@ -197,7 +197,7 @@ Agent definitions, local Claude Code state, and personal working files live unde
 - **Code:** MIT (see `LICENSE`).
 - **Data:** CC-BY-4.0 (see `LICENSE-DATA.md`).
 
-External contributors who want to propose a crosswalk amendment or methodology extension should open a GitHub issue with the proposed change, the empirical anchor (which raw HERD year and file, or which published NSF document), and the `decision_rationale` they would add. A CONTRIBUTING.md will land at Stage 2 when external contribution becomes a real flow; until then, the issue-based proposal is the path.
+External contributors who want to propose a crosswalk amendment or methodology extension should open a GitHub issue with the proposed change, the empirical anchor (which raw HERD year and file, or which published NSF document), and the `decision_rationale` they would add. The issue-based proposal flow is documented in `CONTRIBUTING.md` (landed at the HERD public release — trajectory-Stage-1, §1). A platform-stage (trajectory-Stage-2) revision will add pull-request contribution mechanics when the platform makes direct contribution a routine flow.
 
 ## 12. Override log
 

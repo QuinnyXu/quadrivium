@@ -19,7 +19,7 @@ Under the following terms:
 
 When using quadrivium's harmonized data in research, presentations, dashboards, or derivative works, please cite:
 
-> Quadrivium contributors. *Quadrivium: Reconstructive Harmonization of U.S. higher-education survey data.* Available at: [repository URL]. License: CC BY 4.0.
+> Quadrivium contributors. *Quadrivium: Reconstructive Harmonization of U.S. higher-education survey data.* Available at: https://github.com/QuinnyXu/quadrivium. License: CC BY 4.0.
 
 A formal citation block with a Zenodo DOI will be added at the first Zenodo release.
 

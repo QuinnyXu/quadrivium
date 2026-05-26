@@ -4,6 +4,7 @@ title: "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey
 type: dataset
 version: "1.0.0"
 license: CC-BY-4.0
+repository-code: "https://github.com/QuinnyXu/quadrivium"
 authors:
   - name: "Quadrivium contributors"
 abstract: >-

@@ -29,7 +29,7 @@ Companion validation reports in `validation/reports/` carry the reconciliation a
 ## Quick start
 
 ```bash
-git clone <repo-url> quadrivium
+git clone https://github.com/QuinnyXu/quadrivium.git quadrivium
 cd quadrivium
 uv sync
 uv run python etl/build_herd_panel.py        # rebuild financial + attribute parquets
@@ -123,4 +123,4 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
 
 ## Contributing
 
-External contribution flow is currently issue-based. To propose a crosswalk amendment or methodology extension, open a GitHub issue with: the proposed change, the empirical anchor (which raw HERD year and file, or which published NSF document), and the `decision_rationale` you would add to the crosswalk row. A `CONTRIBUTING.md` will land at Stage 2 when external contribution becomes a routine flow.
+External contribution flow is currently issue-based. To propose a crosswalk amendment or methodology extension, open a GitHub issue with: the proposed change, the empirical anchor (which raw HERD year and file, or which published NSF document), and the `decision_rationale` you would add to the crosswalk row. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for full proposal guidance; pull-request mechanics arrive at the platform stage.
