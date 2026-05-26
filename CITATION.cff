@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use quadrivium's harmonized panels in research, please cite as below."
+title: "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels"
+type: dataset
+version: "1.0.0"
+license: CC-BY-4.0
+authors:
+  - name: "Quadrivium contributors"
+abstract: >-
+  Reproducible analytical panels harmonizing NSF Higher Education Research and
+  Development (HERD) survey data (FY 1972–2024) across the 2010 instrument
+  redesign, using Reconstructive Harmonization: each era is reconstructed on its
+  own terms, the era boundary is decomposed into named, quantified components
+  (real growth, definitional change, population expansion, bounded residual), and
+  both are published with documentation a cold reader can use without misreading
+  the discontinuity. The deposit ships a 50-year field-level R&D expenditure panel
+  (FY 1975–2024), a Q15/Q16 research-personnel panel (FY 2022–2024), and a Q4/Q5
+  attribute sibling, each validated against published NSF/NCSES ground truth.
+keywords:
+  - higher education
+  - research and development
+  - HERD
+  - NSF
+  - NCSES
+  - data harmonization
+  - reproducible research
+  - survey methodology
+  - Reconstructive Harmonization
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.XXXXXXX"
+    description: "Concept DOI (all versions) of the quadrivium HERD deposit — reserved placeholder; minted at the first Zenodo release (Stage 3). This file is the single source of truth for the DOI."

@@ -93,7 +93,25 @@ Stages 2 and 3 are not built now; they are the durable framing of where the proj
 
 ## Citation
 
-If you use quadrivium's harmonized panels in research, please cite the deposit DOI (Zenodo deposit pending) and the methods note. A formal citation block will land with the first Zenodo release.
+If you use quadrivium's harmonized panels in research, please cite the deposit and the methods note. Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff) — the single source of truth for the DOI. The DOI below is a reserved placeholder; the concept DOI is minted at the first Zenodo release.
+
+**Plain text:**
+
+> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels.* Version 1.0.0. Zenodo. DOI: 10.5281/zenodo.XXXXXXX (reserved; see `CITATION.cff`). License: CC-BY-4.0.
+
+**BibTeX:**
+
+```bibtex
+@dataset{quadrivium_herd_2026,
+  author    = {{Quadrivium contributors}},
+  title     = {{Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data --- HERD Financial and Personnel Panels}},
+  year      = {2026},
+  version   = {1.0.0},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.XXXXXXX},
+  note      = {DOI reserved; minted at first Zenodo release. Data CC-BY-4.0; code MIT.}
+}
+```
 
 ## Contributing
 
