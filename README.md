@@ -101,11 +101,11 @@ Stages 2 and 3 are not built now; they are the durable framing of where the proj
 
 ## Citation
 
-If you use quadrivium's harmonized panels in research, please cite the deposit and the methods note. Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff) — the single source of truth for the DOI. The DOI below is a reserved placeholder; the concept DOI is minted at the first Zenodo release.
+If you use quadrivium's harmonized panels in research, please cite the deposit and the methods note. Machine-readable citation metadata is in [`CITATION.cff`](CITATION.cff) — the single source of truth for the DOI. The DOI below is the concept DOI (all versions), minted on Zenodo.
 
 **Plain text:**
 
-> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels.* Version 1.0.0. Zenodo. DOI: 10.5281/zenodo.XXXXXXX (reserved; see `CITATION.cff`). License: CC-BY-4.0.
+> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels.* Version 1.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0.
 
 **BibTeX:**
 
@@ -116,8 +116,8 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
   year      = {2026},
   version   = {1.0.0},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.XXXXXXX},
-  note      = {DOI reserved; minted at first Zenodo release. Data CC-BY-4.0; code MIT.}
+  doi       = {10.5281/zenodo.20404785},
+  note      = {Concept DOI (all versions); v1.0.0 version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
 }
 ```
 

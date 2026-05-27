@@ -29,5 +29,5 @@ keywords:
   - Reconstructive Harmonization
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.XXXXXXX"
-    description: "Concept DOI (all versions) of the quadrivium HERD deposit — reserved placeholder; minted at the first Zenodo release (Stage 3). This file is the single source of truth for the DOI."
+    value: "10.5281/zenodo.20404785"
+    description: "Concept DOI (all versions) of the quadrivium HERD deposit. This file is the single source of truth for the DOI; the v1.0.0 version DOI is 10.5281/zenodo.20404786."

@@ -21,7 +21,7 @@ When using quadrivium's harmonized data in research, presentations, dashboards, 
 
 > Quadrivium contributors. *Quadrivium: Reconstructive Harmonization of U.S. higher-education survey data.* Available at: https://github.com/QuinnyXu/quadrivium. License: CC BY 4.0.
 
-A formal citation block with a Zenodo DOI will be added at the first Zenodo release.
+Concept DOI (all versions): [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (Zenodo). See [`CITATION.cff`](CITATION.cff) for the machine-readable citation.
 
 ## Underlying source data
 
