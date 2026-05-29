@@ -72,6 +72,8 @@ Raw NSF HERD zips live in `data/raw/herd/` (gitignored, SHA-256s tracked in `dat
 
 **Cold-reader contract.** A reader with the lockfile, the raw zips named in `data/raw/MANIFEST.md`, and the NCSES reference PDFs in `data/reference/` reaches the same harmonized parquet bit-equivalently (modulo parquet writer determinism on a fixed input-and-code-version pair).
 
+**Acquisition-format lock (HD 3.1, locked).** Source tables that arrive as `xlsx` (e.g., the Federal S&E Support module) are converted **once, at acquisition, to CSV** — not read as `xlsx` at runtime. Reading `xlsx` through DuckDB's `excel` extension would trigger an **unpinned runtime extension fetch**, which is not genuinely dependency-free in the reproducibility sense and would break the §3 deps-pinning posture. The lock: one-time `xlsx`→`csv` conversion at acquisition, with a **PDF audit sibling** retained alongside the CSV as the human-readable provenance check. This keeps the deposit runtime to the genuinely-pinned deps (`duckdb`, `pypdf`) and preserves the cold-reader contract above.
+
 ## 4. Schema and era-handling locks
 
 ### Long-format schema
@@ -123,6 +125,15 @@ The W4 NULL-handling lock defines a four-value `quality_flag` enum (`reported`, 
 - **Empirical scope adjustments to existing enum values do NOT require codeset extension treatment.** The era-B `status='u'` characterization (~4,000 rows, 106 institutions, retired FY 2023+) is documented as empirical scope, not as a codeset change.
 
 See `validation/reports/era_a_status_codeset_findings.md` and `validation/reports/herd_null_characterization_findings.md` for the empirical anchors.
+
+### Cross-survey institution-identity spine (HD 3.1 addendum, locked)
+
+The cross-survey join spine (`crosswalks/_shared/`, §10) is a **Reconstructive Harmonization clause-(a) reconstruction object** in its own right — not a free join. HD 3.1 surfaced that the Federal S&E Support module and HERD share **no native key**; the spine reconstructs the institution-identity match that no single source column carries.
+
+- **Canonical key: IPEDS UNITID.** The spine resolves every participating institution to UNITID as the canonical identifier. Aliases carried for matching: `ncses_inst_id`, and `name`+`state`.
+- **UNITID-canonical ≠ UNITID-complete on the HERD side.** HERD carries `ipeds_unitid` only in era B (2010–2024); era-A rows (1972–2009) carry `fice` only and have UNITID NULL (per the era-handling locks above). The spine's HERD side therefore has an **era-A UNITID coverage gap**. This is not a problem for dataset #2 — the Federal S&E Support set in scope (FY2020–FY2023) is entirely modern-era — but UNITID being the canonical key does **not** imply HERD is UNITID-covered across all 50 years.
+- **Clause-(c) match-rate receipt — two distinct numbers.** The spine publishes its unmatched residual as a clause-(c) receipt, reported as **two separate match rates: an institution-match rate AND a dollar-match rate.** These are different numbers and must not collapse into one — the match can cover, say, 80% of institutions but 97% of dollars (or the reverse). The **dollar-match rate is the one that matters most for the funding-IN ↔ expenditure-OUT analytical thread** (§1). Both rates are published; the unmatched residual is surfaced, not hidden.
+- **Scope.** The spine is scoped to the active-survey set (HERD + Federal S&E Support), not a comprehensive identity-over-time registry; that stays deferred to the IPEDS cycle (§10). Per-row `decision_rationale` (§6) on every spine row; match-rate receipt validates against §5 ground truth.
 
 ## 5. Validation ground truth
 
