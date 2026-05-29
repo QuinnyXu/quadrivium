@@ -6,6 +6,8 @@ NSF_HERD.zip
 
 # Inspection / spike scratch — generalized rule.
 _tmp_*/
+# Per-survey spike scratch (throwaway downloads; never enters the deposit tree).
+etl/spikes/_*_scratch/
 
 # Claude Code local/personal settings. Agent .md files under .claude/agents/
 # track separately and define the project's panel.

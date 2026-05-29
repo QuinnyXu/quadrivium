@@ -24,7 +24,15 @@ Quadrivium harmonizes U.S. higher-education survey data into reproducible analyt
 
 **Current scope.** NSF HERD (Higher Education Research and Development survey), FY 1972–2024. The financial panel (`data/harmonized/herd_panel.parquet`) covers FY 1975–2024 field-level R&D expenditure data across the 2010 instrument redesign; the personnel sibling (`data/harmonized/herd_personnel.parquet`) covers Q15 headcount + Q16 FTE for FY 2022–2024; the Q4/Q5 attribute sibling (`data/harmonized/herd_panel_attributes.parquet`) carries medical-school and clinical-trials share / value columns.
 
-**Roadmap.** IPEDS (Integrated Postsecondary Education Data System), NSF GSS (Survey of Graduate Students and Postdoctorates in Science and Engineering), and other NCSES surveys as the contribution-process matures. Each migration applies the Reconstructive Harmonization methodology to that survey's discontinuities; the schema and validation patterns adapt to the survey's structure, the methodology does not.
+**Roadmap.** The next dataset is the **Federal S&E Support module** (institution-level federal S&E funding to individual institutions, drawn from the Survey of Federal Funds for R&D) — the funding-IN counterpart to HERD, see *The analytical thread* below. IPEDS (Integrated Postsecondary Education Data System) is sequenced after it, as the migration that brings the IPEDS UNITID keyspace and the productivity denominators online; NSF GSS / SED (human-capital, Tier 1 below) and other NCSES surveys follow as the contribution-process matures. Each migration applies the Reconstructive Harmonization methodology to that survey's discontinuities; the schema and validation patterns adapt to the survey's structure, the methodology does not.
+
+**The analytical thread.** Quadrivium's datasets compose around one organizing picture — *where research funding comes from, where it lands, and what it produces* — three faces joined on the institution-year. HERD covers expenditure-OUT (R&D spent, by institution / field / source class). The Federal S&E Support module covers funding-IN, completing the funding-IN ↔ expenditure-OUT join on the HERD institution-year hub. The obligation-vs-expenditure seam between them (federal-FY commitments vs. institution-FY spending) is itself a Reconstructive Harmonization clause-(b) decomposition object, not a free join.
+
+**Productivity scope (near-term = funding-conversion efficiency).** "Productivity" is scoped by what the harmonizable survey data can actually carry, as a tiered ladder — and the deposit claims only the near-term tier:
+
+- **Near-term — funding-conversion efficiency.** The obligation-to-expenditure gap (committed dollars vs. spent dollars), a byproduct of joining funding-IN to expenditure-OUT on the hub. This is the only productivity face the harmonizable data supports today, and the deposit claims no more.
+- **Named next step (Tier 1) — human-capital productivity.** PhDs produced / researchers trained per research dollar (NSF GSS, SED); NCSES-native, shared keyspace; deferred to a later dataset.
+- **Deferred (Tier 3) — output productivity.** What dollars actually *produce* (publications, citations, patents). Out of near-term scope: it requires non-survey data with incompatible licensing (Web of Science collides with the CC-BY-4.0 data posture) or a separate entity-resolution build (USPTO, NIH RePORTER). Named so the boundary is explicit; **the deposit does not measure output productivity.**
 
 **Three-stage trajectory.** Stage 1 (current) is open-source harmonization of survey datasets. Stage 2 is a platform on top of the harmonized data (interactive query, comparative panels). Stage 3 is commercial analytics built on the platform. Stages 2 and 3 are not built now; they are the durable framing of where the project goes, recorded here so scope decisions can be evaluated against the trajectory rather than the current step alone.
 
@@ -191,6 +199,18 @@ quadrivium/
 ```
 
 Agent definitions, local Claude Code state, and personal working files live under `.claude/` and are gitignored. Raw HERD zips, `__pycache__/`, `.venv/`, IDE configs, and `*.duckdb` are also gitignored. The repo carries deposit-quality artifacts; personal working-environment configuration is not tracked.
+
+**Multi-survey structure (locked at dataset #2).** Quadrivium stays **one repo** — the methodology and this CLAUDE.md doctrine are the shared assets. Each dataset gets a **per-survey subtree** namespaced by survey slug (HERD's existing artifacts are the `herd` namespace; the Federal S&E Support module is `fedsupport`):
+
+```
+data/harmonized/<survey>_*.parquet     # filename-prefix namespace (as HERD already uses)
+crosswalks/<survey>/...
+crosswalks/_shared/...                 # cross-survey infrastructure
+validation/reports/<survey>/...
+docs/methods_notes/<survey>/...
+```
+
+Cross-survey infrastructure lives under **`crosswalks/_shared/`** — most importantly the institution-identity crosswalk (the cross-survey join spine). The identity spine is scoped to the **active-survey set** (currently HERD + Federal S&E Support), not a comprehensive registry; institution-identity-over-time as a full reconstruction object (mergers, renames, ID reassignment across decades) is deferred to the IPEDS cycle, when the registry must become comprehensive. Each dataset is a **separate Zenodo deposit with its own concept DOI and `<TAG>` version namespace** (concept-DOI-per-dataset, Decision B; release runbook reused with new parameters). The canonical cross-survey join-key hierarchy is recorded in §4 once dataset-#2 evidence (HD 3.1) returns. The HERD-crosswalk migration (flat `crosswalks/*.csv` → `crosswalks/herd/`) happens **with** the first `fedsupport` crosswalk landing, not as a standalone churn commit — tying the path-move to a moment the read paths in `etl/build_herd_panel.py` are already being touched; the harmonized parquets need no move (HERD already uses the filename-prefix namespace).
 
 ## 11. License posture
 
