@@ -120,10 +120,10 @@ The MVP proves the expensive thing (the spine) against the anchor year, and pars
 | Great Expectations suite for the parse + spine (grand-total invariant, UNITID-uniqueness, no-orphan-state). | 2.0 | clean |
 | Era-extension: FY2010s acquisition + parse to widen the funding-IN series (still pre-seam). | 4.0 | clean + spike on early-vintage table format |
 | Manual-tail second pass + spine hardening (the unmatched tail almost always has a long thin tail of edge institutions). | 2.0 | ambiguous |
-| Zenodo deposit packaging for the **separate `fedsupport` concept DOI** (§10 Decision B; release runbook reused with new params). | 2.0 | clean |
+| Zenodo deposit packaging — FedSupport ships as a **new version of the integrated database** under the one concept DOI `10.5281/zenodo.20404785` (CLAUDE.md §10; Decision B **reversed** — see `seeds/overrides.md`; release runbook reused with new params, a version bump of the one deposit, not a separate deposit). | 2.0 | clean |
 | **Production delta** | **~16 added** | total ~4 weeks build + validation/deposit ≈ 8-week calendar for a part-time builder |
 
-The 8-week framing is honest: the **harmonization (parse + spine) is the 2-week MVP**; the validation receipts, the methods-note section, the resolved boundary crosswalk, the era-extension, and the separate Zenodo deposit are the other ~6 weeks. Same integration-tax ratio HD 2.1 surfaced.
+The 8-week framing is honest: the **harmonization (parse + spine) is the 2-week MVP**; the validation receipts, the methods-note section, the resolved boundary crosswalk, the era-extension, and the next version release (the database version bump under …785) are the other ~6 weeks. Same integration-tax ratio HD 2.1 surfaced.
 
 ---
 
@@ -221,7 +221,7 @@ The spike's kill metric was mis-specified on **two** dimensions at once, and the
 - **SECONDARY:** reopen if the 2 token-set collision-hazard keys prove to be the visible edge of a **systematic same-name collision class** rather than a small enumerable watch-list — the city-token disambiguator would then be insufficient and the spine's validation surface larger than scoped.
 - Both **surface to Vision.**
 
-**Hold (per §5):** the 8→6 vol-71 taxonomy crosswalk, the HERD-crosswalk path-move, and the obligation-vs-expenditure seam decomposition (HD 3.6) stay deferred. The era-extension, methods-note, and separate Zenodo deposit are gated behind a working spine + receipt. MVP surfaces before any deposit/release work.
+**Hold (per §5):** the 8→6 vol-71 taxonomy crosswalk, the HERD-crosswalk path-move, and the obligation-vs-expenditure seam decomposition (HD 3.6) stay deferred. The era-extension, methods-note, and next version release (under …785) are gated behind a working spine + receipt. MVP surfaces before any deposit/release work.
 
 ---
 

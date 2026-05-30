@@ -1,6 +1,6 @@
 # Release Runbook — GitHub public release + Zenodo DOI
 
-How a quadrivium dataset deposit goes public and gets a citable DOI. Written from the HERD `v1.0.0-herd` first release (2026-05); reusable for HERD re-mints (data corrections, new fiscal years) and future dataset deposits (IPEDS, NSF GSS) under the **concept-DOI-per-dataset** scheme.
+How a quadrivium release goes public and gets a citable DOI. Written from the HERD `v1.0.0-herd` first release (2026-05); reusable for HERD re-mints (data corrections, new fiscal years) and future dataset additions (FedSupport, IPEDS, NSF GSS) under the **one-database, one-concept-DOI** model (CLAUDE.md §10; overturns Decision B — see `seeds/overrides.md`). The integrated harmonized database is **one Zenodo deposit under one concept DOI** (`10.5281/zenodo.20404785`); every release — HERD re-mint or new survey — is a new **version** of that one database, minting a version DOI under the constant concept DOI.
 
 ## Parameters (fill per release)
 
@@ -8,9 +8,9 @@ How a quadrivium dataset deposit goes public and gets a citable DOI. Written fro
 |---|---|---|
 | `<ACCOUNT>` | `QuinnyXu` | GitHub account/org owning the public repo |
 | `<REPO>` | `quadrivium` | repository name |
-| `<TAG>` | `v1.0.0-herd` | annotated release tag (`vMAJOR.MINOR.PATCH-<dataset>`) |
-| `<DATASET>` | HERD | the dataset this release ships |
-| `<CONCEPT_DOI>` | `10.5281/zenodo.20404785` | all-versions DOI (canonical for citation) |
+| `<TAG>` | `v1.0.0-herd` | annotated release tag (`vMAJOR.MINOR.PATCH-<dataset>`); the `-<dataset>` slug is a readability label on a **version of the one database**, not a separate deposit |
+| `<DATASET>` | HERD | the dataset this version adds or re-mints |
+| `<CONCEPT_DOI>` | `10.5281/zenodo.20404785` | the single **database** concept DOI — **constant across all datasets and all versions** (canonical for citation; never re-minted per dataset) |
 | `<VERSION_DOI>` | `10.5281/zenodo.20404786` | this version's DOI (audit trail) |
 
 ## Phase structure (reversibility is the organizing principle)
@@ -18,7 +18,7 @@ How a quadrivium dataset deposit goes public and gets a citable DOI. Written fro
 - **Phase 0 — history hygiene (optional, local, revertible).** Only if commit-author identity needs normalizing before the first public push.
 - **Phase A — pre-deposit gates (local, revertible).** A1: the generator-determinism sweep (two-build SHA on every generated artifact — a HARD gate). A2: CONTRIBUTING.md, repo-URL fill, doc reconciliation.
 - **Phase B — public surface (IRREVOCABLE, credential-gated).** Push, release/tag, DOI mint. **One-way doors.**
-- **Phase C — DOI fill (post-release commit, revisable).** Swap the placeholder for the minted concept DOI on `main`.
+- **Phase C — DOI fill (post-release commit, revisable).** Swap the placeholder for the minted **version** DOI on `main`; the **concept** DOI (`10.5281/zenodo.20404785`) is constant and already in place from v1.0.0.
 
 The irrevocability boundary is the **first push (B1)**. Everything before it is revertible; everything at and after it is permanent (a public commit is assumed cached/forked; a minted Zenodo DOI is permanent by policy).
 
@@ -85,14 +85,15 @@ CONTRIBUTING.md present, repo-URL fill, doc reconciliation (CITATION.cff / READM
 ## B2 — Tag + release (IRREVOCABLE; triggers the Zenodo archive)
 
 1. **⚠️ HARD PRE-FLIGHT — toggle the repo ON in Zenodo** (Prerequisites location) **before** creating the release. A release published with the toggle OFF is **not** archived and **cannot** be retro-archived.
-2. **Create the annotated tag** (annotated `-a` carries tagger/date/message — the citable kind; not a lightweight pointer):
+2. **⚠️ HARD PRE-FLIGHT — confirm `.zenodo.json` carries the integrated-database identity** (title/description) **before** tagging. Per **CLAUDE.md §10** (the one irreversible step, verbatim): *"The per-version `.zenodo.json` title/description must be updated to the integrated-database identity BEFORE each release tag — the GitHub integration full-replaces published metadata from `.zenodo.json` at tag time, and the version DOI's metadata is permanent (the one irreversible step)."* So: before pushing `<TAG>`, open `.zenodo.json` and confirm the `title`/`description` name the **integrated quadrivium database at this version** (not a single survey, not a stale prior-version title). A stale title at tag time mints a **permanently** wrong-titled version DOI — uncorrectable. This is doctrine (§10); the runbook step is its operational form, not a separate rule.
+3. **Create the annotated tag** (annotated `-a` carries tagger/date/message — the citable kind; not a lightweight pointer):
    ```
    git tag -a <TAG> -m "<one-line deposit description; ships <parquets>; methods note path; Citation + DOI: see CITATION.cff>"
    ```
    Verify locally: `git tag -l "<TAG>"` and `git show <TAG>`. Push: `git push origin <TAG>`. Verify on `…/tags`.
    > **Do not put a DOI in the tag message** — it does not exist until B3 (see lesson below).
-3. **Create the GitHub release:** repo → Releases → "Draft a new release" → **choose the existing `<TAG>`** (do not create a new one) → title `<TAG>` → description mirrors the tag message → "Set as latest" → **Publish**. Publishing (toggle ON) fires the Zenodo webhook.
-4. **Validate the archive fired:** within minutes a new deposit appears in Zenodo → Upload. **STOP** if none appears — the toggle was off; enable it and cut a fresh release.
+4. **Create the GitHub release:** repo → Releases → "Draft a new release" → **choose the existing `<TAG>`** (do not create a new one) → title `<TAG>` → description mirrors the tag message → "Set as latest" → **Publish**. Publishing (toggle ON) fires the Zenodo webhook.
+5. **Validate the archive fired:** within minutes a new deposit appears in Zenodo → Upload. **STOP** if none appears — the toggle was off; enable it and cut a fresh release.
 
 ---
 
@@ -126,6 +127,7 @@ Commit to `main` and push. **Do not re-tag `<TAG>`** and **do not re-mint** — 
 | B1 hash gate | parquet SHA ≠ MANIFEST | don't push; build-bug investigation |
 | B1 validate | wrong content/history public | stop before B2; **no force-push**; revert from bundle, recreate repo |
 | B2 pre-flight | Zenodo toggle OFF at release | release won't archive; enable + cut fresh release |
+| B2 pre-flight | stale `.zenodo.json` title at tag time (permanent wrong-title version DOI — the §10 one irreversible step) | confirm `.zenodo.json` carries the **integrated-database identity** before tagging; do not push `<TAG>` until corrected |
 | B2 validate | no Zenodo deposit appears | toggle was off; enable + re-release |
 | B3 | mint fails after push landed | recoverable; fix Zenodo-side + re-release; **never hand-mint manual DOI** |
 
@@ -135,4 +137,6 @@ The bundle backup (if Phase 0 ran) is retained until B3 is green, then deleted.
 
 ## Future version re-mint (forward note)
 
-A data correction or new fiscal-year bump: update `version` in `CITATION.cff` + `.zenodo.json`, cut a new `<TAG>`, and the native integration mints a new **version** DOI under the stable **concept** DOI automatically. Then a Phase C swap updates the version-DOI references. The concept DOI in `CITATION.cff` does not change across versions. A sibling dataset (IPEDS, GSS) gets its **own** concept DOI and its own `<TAG>` namespace — the same runbook, new parameters.
+A data correction or new fiscal-year bump: update `version` in `CITATION.cff` + `.zenodo.json`, cut a new `<TAG>`, and the native integration mints a new **version** DOI under the stable **concept** DOI automatically. Then a Phase C swap updates the version-DOI references. The concept DOI in `CITATION.cff` does not change across versions.
+
+**Adding a new dataset is a new version of the database, not a new deposit** (CLAUDE.md §10; overturns Decision B). To add FedSupport (or later IPEDS, GSS): update `.zenodo.json` `title`/`description` to the **integrated-database identity at the new version** (the B2 pre-flight gate — the one irreversible step, §10), bump `version` in `CITATION.cff` + `.zenodo.json`, cut a new `<TAG>` (e.g. `v2.0.0-fedsupport` — the slug is a readability label, not a separate deposit), and the integration mints a new **version** DOI under the **one constant concept DOI `10.5281/zenodo.20404785`**. The concept DOI does **not** change — same runbook, new parameters, same single deposit.
