@@ -1,7 +1,7 @@
 {
   "upload_type": "dataset",
-  "title": "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels",
-  "version": "1.0.0",
+  "title": "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data",
+  "version": "2.0.0",
   "language": "eng",
   "access_right": "open",
   "license": "cc-by-4.0",
@@ -17,11 +17,15 @@
     "data harmonization",
     "reproducible research",
     "survey methodology",
-    "Reconstructive Harmonization"
+    "Reconstructive Harmonization",
+    "federal research funding",
+    "Federal S&E Support",
+    "Survey of Federal Funds for R&D",
+    "research funding"
   ],
   "related_identifiers": [
     { "identifier": "https://github.com/QuinnyXu/quadrivium", "relation": "isSupplementTo", "resource_type": "software" }
   ],
-  "description": "Reproducible analytical panels harmonizing NSF Higher Education Research and Development (HERD) survey data (FY 1972–2024) across the 2010 instrument redesign, using Reconstructive Harmonization: each era is reconstructed on its own terms, the era boundary is decomposed into named, quantified components (real growth, definitional change, population expansion, bounded residual), and both are published with documentation a cold reader can use without misreading the discontinuity. The deposit ships a 50-year field-level R&D expenditure panel (FY 1975–2024), a Q15/Q16 research-personnel panel (FY 2022–2024), and a Q4/Q5 attribute sibling, each validated against published NSF/NCSES ground truth.",
-  "notes": "Harmonized data artifacts are licensed CC-BY-4.0; the Python source code and lockfile are licensed MIT (see LICENSE in the repository). Concept-DOI-per-dataset scheme (HERD); the concept/version DOI relation is populated automatically by Zenodo at mint and is intentionally not hand-authored here."
+  "description": "An integrated database harmonizing multiple NSF/NCSES higher-education surveys into reproducible analytical panels, using Reconstructive Harmonization: each era is reconstructed on its own terms, methodological discontinuities are decomposed into named, quantified components (real growth, definitional change, population expansion, bounded residual), and both are published with documentation a cold reader can use without misreading the discontinuity. Version 2.0 contains two datasets joined into one integrated object. (a) HERD — NSF Higher Education Research and Development survey data (FY 1972–2024) across the 2010 instrument redesign: a 50-year field-level R&D expenditure panel (FY 1975–2024), a Q15/Q16 research-personnel panel (FY 2022–2024), and a Q4/Q5 attribute sibling; this is the expenditure-OUT face (R&D spent, by institution / field / source class). (b) Federal S&E Support — the FY 2020–FY 2023 federal-obligations parse drawn from the NSF Survey of Federal Funds for R&D; this is the funding-IN face (federal S&E dollars committed to individual higher-education institutions). The value of the database is the integrated whole: HERD and Federal S&E Support are linked on the funding-IN ↔ expenditure-OUT axis via the cross-survey institution-identity spine, so funding committed to an institution can be read against R&D it spent. The funding-IN ↔ expenditure-OUT join carries documented misalignments (federal-obligation fiscal-year basis vs. institution reporting-year basis, and institutional-grain differences); see the methods notes for the decomposition. Each dataset is validated against published NSF/NCSES ground truth.",
+  "notes": "Harmonized data artifacts are licensed CC-BY-4.0; the Python source code and lockfile are licensed MIT (see LICENSE in the repository). Quadrivium is one integrated database published as a single Zenodo deposit under one concept DOI, with each dataset added as a version; the concept/version DOI relation is populated automatically by Zenodo at mint and is intentionally not hand-authored here."
 }

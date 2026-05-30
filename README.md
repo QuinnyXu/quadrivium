@@ -105,19 +105,19 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
 
 **Plain text:**
 
-> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data — HERD Financial and Personnel Panels.* Version 1.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0.
+> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data.* Version 2.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0. Version 2.0 contains two datasets — HERD (R&D expenditure-OUT panels) and Federal S&E Support (federal funding-IN) — joined via the cross-survey institution-identity spine.
 
 **BibTeX:**
 
 ```bibtex
-@dataset{quadrivium_herd_2026,
+@dataset{quadrivium_2026,
   author    = {{Quadrivium contributors}},
-  title     = {{Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data --- HERD Financial and Personnel Panels}},
+  title     = {{Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data}},
   year      = {2026},
-  version   = {1.0.0},
+  version   = {2.0.0},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.20404785},
-  note      = {Concept DOI (all versions); v1.0.0 version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
+  note      = {Concept DOI (all versions); v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
 }
 ```
 
