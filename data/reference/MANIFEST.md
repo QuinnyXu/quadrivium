@@ -29,6 +29,21 @@ Static-PDF anchors per `docs/methods_notes/herd_panel_etl_scoping.md`
 | `4e54ce316784df6926d8d148e92f3bbc7fe1b56520a10bf54623c364cb1440f5` | 58,716 | `nsf26304-taba-003.pdf` | Table A-3 — Population counts by degree level FYs 2019–24 (personnel sibling completeness cross-check) |
 | `ca69f36496cf859e836f3c6d74865948186f866f5a26f2a62b54e258e766e347` | 100,767 | `nsf26304-taba-023.pdf` | Table A-23 — HERD Survey data table crosswalk FY 2023 vs. FY 2024 |
 
+## Staged files — Federal S&E Support Table 12 PDF audit siblings (dataset #2)
+
+Added 2026-05-29 (Skipper, HD 3.2 MVP). The human-readable PDF sibling for
+each acquired Federal S&E Support Table 12 (the deposit artifact is the CSV
+under `data/raw/fedsupport/`; this PDF is the provenance/audit anchor,
+mirroring the FY24 Guide and Table-26 PDFs). Source URL pattern:
+`https://ncses.nsf.gov/pubs/{report}/assets/data-tables/tables/{report}-tab012.pdf`.
+
+| SHA-256 | Bytes | File | Description |
+|---------|-------|------|-------------|
+| `1b0fd21d3764dbf6069a45fc671da6b73137e0268d63b5ecb2864185f6a9ecd8` | 493,628 | `nsf22342-tab012.pdf` | Federal S&E Support Table 12 — FY2020 (NSF 22-342) audit sibling |
+| `241469312fb7e608c34cbd1550233b59ce62feb476389a299c0b34389a895dae` | 490,584 | `nsf24311-tab012.pdf` | Federal S&E Support Table 12 — FY2021 (NSF 24-311) audit sibling |
+| `8b967a91d4a4c48bc96094651c2bd9095d88b473dc768cccbf7b617ffe0994ef` | 493,443 | `nsf24326-tab012.pdf` | Federal S&E Support Table 12 — FY2022 (NSF 24-326) audit sibling |
+| `762e9a8e9f7f790c467009735cd99fbc5217d8b349b08fba4a1c161031d9fb9d` | 513,299 | `nsf25339-tab012.pdf` | Federal S&E Support Table 12 — FY2023 (NSF 25-339) audit sibling; == HD 3.1 §7 gate slice |
+
 ## Staged files — `data/reference/dst-table-builder/`
 
 Table Builder CSV snapshots + per-spot-year YAML query sidecars per

@@ -165,6 +165,63 @@ Inside each zip: `short{year}.csv` plus `short{year}.sas7bdat`. The
 CSV member is the canonical source for the loader; the SAS file is
 fallback only.
 
+## Staged files — `data/raw/fedsupport/` (Federal S&E Support, dataset #2)
+
+Generated: 2026-05-29 (Skipper, HD 3.2 MVP). Mirrors the HERD zip-provenance
+model with one difference: the deposit artifact is a **CSV**, not the source
+xlsx. NSF publishes Federal S&E Support Table 12 as **xlsx** (+ PDF + ZIP);
+the locked acquisition contract (CLAUDE.md §3) converts xlsx→CSV **once at
+acquisition** (DuckDB `excel` extension, a one-time step) and stages the CSV
+as the artifact the loader reads via `read_csv_auto`. The §3 no-runtime-
+extension lock binds the deposit **build path**, not the one-time conversion;
+this keeps the cold-reader reproducibility contract intact (no runtime
+extension fetch, no build-time network dependency).
+
+`data/raw/fedsupport/` is **gitignored** (payload); these MANIFEST entries
+are tracked. The PDF **audit sibling** per year lives in `data/reference/`
+(see `data/reference/MANIFEST.md`) as the human-readable provenance anchor,
+mirroring the FY24 Guide PDF and the Table-26 anchors.
+
+**Survey:** NSF *Survey of Federal Science and Engineering Support to
+Universities, Colleges, and Nonprofit Institutions*. Table 12 = higher-ed
+institution-level federal obligations by state / institution / type of
+activity (higher-ed-ONLY; nonprofit lives in separate tables — do NOT
+free-sum, HD 3.1 §2). Report numbers: FY2020 NSF 22-342, FY2021 NSF 24-311,
+FY2022 NSF 24-326, FY2023 NSF 25-339.
+
+The deposit artifact (CSV) — what the loader reads:
+
+| SHA-256 | Bytes | File |
+|---------|-------|------|
+| `3c68f81bf24558ae0529d08e339df39dc7da2706223863709c876ff963b3f45b` | 57,944 | `nsf22342-tab012-FY2020.csv` |
+| `bd4f0de02f7bf7f0b0ce267d1602250019ada9fcd42ad6703f0166ac6f3d853d` | 63,101 | `nsf24311-tab012-FY2021.csv` |
+| `a56b3ba42304bc51aa1e58de24d5948bf897c756861cdeb9cb4e3feee576376b` | 63,554 | `nsf24326-tab012-FY2022.csv` |
+| `309f3d11705d9a39304e9802100938a05db89c791c63b347e60dfa288786affa` | 64,093 | `nsf25339-tab012-FY2023.csv` |
+
+Source-of-record (xlsx) provenance — NOT staged as a deposit artifact (kept
+under gitignored spike scratch); recorded so a future session can re-fetch
+the same upstream xlsx, re-convert, and confirm the CSV. URLs follow the
+stable pattern `https://ncses.nsf.gov/pubs/{report}/assets/data-tables/tables/{report}-tab012.xlsx`:
+
+| xlsx SHA-256 | Bytes | Report (xlsx) | gate cross-check |
+|---------|-------|------|------|
+| `e4fb34bff7a0b78d9531d08f507112159e7cdd56bfa3229685a8055d68503663` | 77,170 | nsf22342 (FY2020) | == HD 3.1 §7 |
+| `364f0f85d7af1f083db67d16bc00096847c1b5f9160b22c25f531d65523140e8` | 77,318 | nsf24311 (FY2021) | == HD 3.1 §7 |
+| `98f2b3601b49c8054173fe7aa8c0993e54781d7fd2050915ebae2adfb89d8b1b` | 77,858 | nsf24326 (FY2022) | new (HD 3.1 had no FY2022) |
+| `dea92dcecb94ba72333c5dd39b6a8b4c0046124b9e135bea01a30ac94c5b73c7` | 79,443 | nsf25339 (FY2023) | == HD 3.1 §7 (re-verified) |
+
+xlsx→CSV conversion (one-time, at acquisition):
+
+```powershell
+# DuckDB excel extension; read the full A1:G1200 range (the A1 title band
+# makes the extension auto-detect a 1-col sheet otherwise — HD 3.2 §8.1) and
+# COPY to a headerless CSV the loader reads via read_csv_auto.
+duckdb -c "INSTALL excel; LOAD excel;
+COPY (SELECT * FROM read_xlsx('{report}-tab012.xlsx', header=false,
+  all_varchar=true, range='A1:G1200', stop_at_empty=false))
+TO '{report}-tab012-FY{year}.csv' (HEADER false, QUOTE '\"');"
+```
+
 ## Regeneration
 
 To recompute the checksum list (Windows PowerShell):
