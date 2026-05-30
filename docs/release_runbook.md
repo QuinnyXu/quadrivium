@@ -16,7 +16,7 @@ How a quadrivium dataset deposit goes public and gets a citable DOI. Written fro
 ## Phase structure (reversibility is the organizing principle)
 
 - **Phase 0 — history hygiene (optional, local, revertible).** Only if commit-author identity needs normalizing before the first public push.
-- **Phase A — public-release prep (local, revertible).** CONTRIBUTING.md, repo-URL fill, doc reconciliation, final hash gate.
+- **Phase A — pre-deposit gates (local, revertible).** A1: the generator-determinism sweep (two-build SHA on every generated artifact — a HARD gate). A2: CONTRIBUTING.md, repo-URL fill, doc reconciliation.
 - **Phase B — public surface (IRREVOCABLE, credential-gated).** Push, release/tag, DOI mint. **One-way doors.**
 - **Phase C — DOI fill (post-release commit, revisable).** Swap the placeholder for the minted concept DOI on `main`.
 
@@ -34,6 +34,28 @@ Run only if the local commit history carries an identity that should not be the 
 4. **Verify:** all commits show the new author + committer; the parquet SHAs still match `data/harmonized/MANIFEST.md`; tree clean.
 
 > **Lesson (v1.0.0-herd):** file SHAs survive an author rewrite; commit hashes do not. The reproducibility contract (CLAUDE.md §3) is about *file* reproducibility, so the rewrite leaves it intact — but in-doc audit references (`git show <hash>`) must be reconciled or they dangle, which fails the clause-(c) auditability bar.
+
+---
+
+## Phase A — pre-deposit gates (local, revertible)
+
+Run these **before** the irrevocable B1 push. They are content/reproducibility gates; any failure is a build-bug investigation, not a release step.
+
+### A1 — ⚠️ HARD GATE: generator-determinism sweep (two-build SHA on EVERY generated artifact)
+
+Every **generator-emitted** deposit artifact must rebuild **bit-equivalently** (CLAUDE.md §3 cold-reader contract). Hand-authored artifacts (crosswalk CSVs with curated `decision_rationale`, hand-written reconciliation prose) are **out of this gate by definition** — they are not regenerated. The gate fires on EVERY dataset deposit (HERD re-mints, FedSupport, GSS/SED, IPEDS), not only the dataset under active work.
+
+**Procedure:**
+1. **Enumerate** every generator-emitted artifact in the deposit set — i.e., every file written by an `etl/build_*.py` (or equivalent) generator: harmonized parquets, generated crosswalk spines, build-emitted validation receipts. Classify each candidate **generated vs hand-authored** and record the classification (a one-line note per artifact in the release notes is sufficient).
+2. **Two-build SHA each generated artifact:** run its generator **twice consecutively**, SHA-256 the output after each run, and confirm the two hashes match.
+3. **Parquet carve-out (data-stability fallback).** §3 explicitly carves out "modulo parquet writer determinism on a fixed input-and-code-version pair." So for a parquet: check byte-stability first; **if and only if** the bytes flap, verify the **data** (logical rows) is stable instead — hash the deterministically-sorted full-row content across the two builds. Byte-flap + data-stable = within the §3 carve-out (acceptable). **Data-flap = a real defect — STOP and fix.** (Order the build's final write with `ORDER BY ALL` so the logical row order is itself deterministic.)
+4. **ALL must match.** Any flap on a non-parquet generated artifact, or any *data* flap on a parquet, **blocks the deposit**.
+
+> **Lesson (HD 3.2, 2026-05-30):** the determinism check must cover **every** generated artifact, not just the one under active edit. The FedSupport spine receipt got the two-build check because it was being edited; the spine CSV — equally generator-emitted, equally a deposit artifact — did not, and shipped a non-deterministic SHA into a commit (the `herd_inst_name_long` alias was picked by unordered DuckDB iteration when ≥2 HERD names shared a UNITID). Non-determinism hides in *finished* artifacts precisely because they stop being rebuilt. The fix: a manufactured display value ships with a **documented, total-order tiebreak**; the gate: enumerate-and-two-build-SHA the whole generated set before push. See `seeds/overrides.md` (6th calibration finding).
+
+### A2 — repo-prep checks
+
+CONTRIBUTING.md present, repo-URL fill, doc reconciliation (CITATION.cff / README / `.zenodo.json` consistent), in-doc commit-hash references reconciled if Phase 0 ran. (The harmonized-parquet SHA gate against `data/harmonized/MANIFEST.md` runs again as the **first command of B1** — the irrevocability boundary — so it is listed there.)
 
 ---
 
@@ -100,6 +122,7 @@ Commit to `main` and push. **Do not re-tag `<TAG>`** and **do not re-mint** — 
 
 | Gate | STOP trigger | Action |
 |---|---|---|
+| A1 determinism sweep | any generated artifact's two-build SHA flaps (non-parquet), or a parquet's *data* flaps | don't push; build-bug investigation (non-determinism in a deposit artifact) |
 | B1 hash gate | parquet SHA ≠ MANIFEST | don't push; build-bug investigation |
 | B1 validate | wrong content/history public | stop before B2; **no force-push**; revert from bundle, recreate repo |
 | B2 pre-flight | Zenodo toggle OFF at release | release won't archive; enable + cut fresh release |

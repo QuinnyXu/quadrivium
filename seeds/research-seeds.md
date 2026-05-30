@@ -58,6 +58,12 @@ Format: date, one-paragraph observation, tags. Tags help filter during quarterly
 
 ---
 
+### 2026-05-29
+
+**A downstream cross-survey identity spine is a completeness probe on the upstream survey's keyspace.** Building the Federal S&E Support institution-identity spine (HD 3.2, `crosswalks/_shared/institution_identity.csv`) surfaced a finding *about HERD* that HERD's own build never had reason to test: HERD's era-B `ipeds_unitid` is canonical-but-not-complete — 47 of 1,125 distinct era-B institutions (4.2%) carry NULL `ipeds_unitid` at the raw NSF source, including dollar-dominant institutions (Johns Hopkins ~$2.1B, Ohio State, Texas A&M College Station, Vanderbilt). HERD's methods note had documented era-B as "all three identifiers populated"; the spine falsified it, because a UNITID-canonical join *exercises* the join key as a complete keyspace in a way a single-survey panel build never does — a panel build only needs the key present where it reads it. 45 of the 47 retain a non-null `ncses_inst_id`, so the NCSES keyspace is the complete one and IPEDS is the gap; the structural read (gate-checked at HD 3.2 finalization, `etl/spikes/_fedsupport_gate_checks.py`) is that the missing UNITIDs are genuinely absent from every HERD artifact and resolve only at the IPEDS cycle. The generalizable observation, RH-relevant: **cross-survey join construction is a keyspace-completeness audit on each survey it touches — the second survey is the first survey's completeness test.** This anchors a possible methodology note for the IPEDS cycle ("the identity spine found HERD's UNITID holes before IPEDS filled them") and is a Reconstructive-Harmonization application at the cross-survey join grain rather than the within-survey era grain. Documented as a HERD backlog item at `docs/methods_notes/herd_panel_etl_scoping.md` §6.3 (line corrected 2026-05-29). *Tags: methods note, cross-survey linkage, IPEDS-cycle, Reconstructive Harmonization application, possible methodology-extension piece, keyspace-completeness audit.*
+
+---
+
 ## Promotion / Hold / Drop log
 
 *Updated during quarterly panel reviews. When a seed graduates into a methods-note section, methodology-extension piece, or `CLAUDE.md` lock, record the move here so the seeds file stays a working surface, not an archive.*
