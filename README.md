@@ -117,7 +117,7 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
   version   = {2.0.0},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.20404785},
-  note      = {Concept DOI (all versions); v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
+  note      = {Concept DOI (all versions); v2.0.0 version DOI 10.5281/zenodo.20469884; v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
 }
 ```
 
