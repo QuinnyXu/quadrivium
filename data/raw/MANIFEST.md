@@ -249,6 +249,89 @@ COPY (SELECT * FROM read_xlsx('{report}-tab012.xlsx', header=false,
 TO '{report}-tab012-FY{year}.csv' (HEADER false, QUOTE '\"');"
 ```
 
+## Staged files — `data/raw/gss/` (GSS, dataset #3)
+
+53 per-year zips FY1972–2024 from NSF/NCSES — the **Survey of Graduate
+Students and Postdoctorates in Science and Engineering (GSS)**, dataset #3
+(ratified `seeds/overrides.md` 2026-05-31; gate `docs/gss/hd_4_1_gate_findings.md`).
+Each zip carries `gssYYYY_Code.xlsx` (the 3-sheet wide tabulation —
+Race / Support / PD_NFR, one row per institution × field, native IPEDS
+`UNITID`) + `gssYYYY_code.sas7bdat` (the microdata sibling).
+
+**§3 acquisition-format decision (HD 4.1, ratified 2026-06-02 — XLSX
+authoritative).** Neither member loads under the pinned runtime
+(`duckdb` + `pypdf`). Per the §3 acquisition-format lock the **XLSX is
+converted once, at acquisition, to CSV** by `etl/acquire_gss.py` — a
+**stdlib-only** reader (xlsx = zip + XML), zero new dependency; the runtime
+stays `duckdb` + `pypdf`. The `sas7bdat` is retained, **unread**, as the
+provenance/audit sibling (a valid 64-bit SAS file; exact SAS↔XLSX row
+reconciliation via `pyreadstat` is a one-time acquisition cross-check, never a
+build dependency). This sets the pattern for every future NCSES SAS+XLSX-zip
+survey (incl. SED).
+
+The SHA-256s below pin the **as-downloaded zips** — the bit-exact NCSES
+artifacts a cold reader re-stages and checksums. Converted CSVs land
+gitignored at `data/raw/gss/csv/gssYYYY_<sheet>.csv` as **generated,
+regenerable intermediates** (UTF-8/LF, A1 two-build-deterministic — confirmed
+2026-06-02); they are not separately pinned here (the zip + the deterministic
+converter reproduce them).
+
+| SHA-256 | Bytes | File |
+|---------|-------|------|
+| `428a82b8111f1e64fb53083f6611a7891f3e6d3ccbc448cb340d69bca8b10d98` | 1,682,692 | `graduate_students_postdocs_1972.zip` |
+| `ec3c46388f2d509b3d452334514e9d8b628123bc5decd48660e6c1249ee8da92` | 2,078,229 | `graduate_students_postdocs_1973.zip` |
+| `75021c6c532ba669c43da62ec3f684bdad078c0053d95c892bef983dc1e6317a` | 2,331,472 | `graduate_students_postdocs_1974.zip` |
+| `b1d597125ba5e7c03d67e6367443b9193b19c95efb06a3c53d4fd10313931516` | 2,756,240 | `graduate_students_postdocs_1975.zip` |
+| `cd04d2ef19389f13cd213361e23b154c625005a195b0461bd54cab0375181f69` | 2,854,149 | `graduate_students_postdocs_1976.zip` |
+| `4815b2c24fb78ff0c1c9ee571e33b8259e15120350bc8854d6f9877c84488e0b` | 3,030,855 | `graduate_students_postdocs_1977.zip` |
+| `6838bad218b0cfb00d12e4b7066f97bb92c5ff7e7adfc046f561f7c1a123b153` | 1,646,954 | `graduate_students_postdocs_1978.zip` |
+| `08df0db1ab4c56177bfe56bca1f92c909865889d61e5166c3b47f44d4132cc04` | 3,418,528 | `graduate_students_postdocs_1979.zip` |
+| `b95471b521ea197e2859a6b4b4f583313fc0f0035b1d65fe77976efeb80a1bee` | 3,846,750 | `graduate_students_postdocs_1980.zip` |
+| `664464a8c3359e8f7620f9d22afa8622cb852c0b96a53fadc4bb06e1fbd4da81` | 3,855,399 | `graduate_students_postdocs_1981.zip` |
+| `c758fdc3e5994613a600247999c26b816d16af11c77a3ab05bcf241632de82bd` | 3,849,945 | `graduate_students_postdocs_1982.zip` |
+| `5606be112b824f57de71de0d891aeb24c56bcf61a9b0c8e5240014b566d6ed2a` | 3,909,185 | `graduate_students_postdocs_1983.zip` |
+| `716658a4dda4ad4bd9fb0604b457553fd42d61ed6e0c2820846e23331304aa25` | 3,626,840 | `graduate_students_postdocs_1984.zip` |
+| `6fc6aa3ce7561ace312aeb73191554acf8324442e3e8a83311ac18b1d77fa5cd` | 3,671,584 | `graduate_students_postdocs_1985.zip` |
+| `db4660dfa903debf1070e771a9f4e5f7f95f8387215aef87e2108e07c5877de6` | 3,711,783 | `graduate_students_postdocs_1986.zip` |
+| `8fde48c2314850d42272f07e84a97ba3137c1a34a4cc2472ceca678ebbe36ed4` | 3,761,087 | `graduate_students_postdocs_1987.zip` |
+| `a8b1a0724b3bdd3ed12bfc246adea31feb962adead9aee3ca9a55a221d664d1f` | 4,157,388 | `graduate_students_postdocs_1988.zip` |
+| `ac9a6f7f802bc14194b3cf1656b4c86bafecd0c5dbcd6210d7e8257a076894cd` | 4,223,635 | `graduate_students_postdocs_1989.zip` |
+| `4672f4800d31fa9cf186d46080ceb750166badd3c0e5e8fa3141bd454c56d9c5` | 4,284,801 | `graduate_students_postdocs_1990.zip` |
+| `d23618b8553f523f508f80ea713abf2b1eab84a2f9a2bd9afc4b09d7caeebfe6` | 4,384,668 | `graduate_students_postdocs_1991.zip` |
+| `5327847bdcfc29ed04a593f14fca9267d3e12dfdc0d68447dbe57b0bbf2048e2` | 4,485,638 | `graduate_students_postdocs_1992.zip` |
+| `a356998472aaa9d287321d848a5ab3aee83f5c79600b5eb6bf51ded1407a3863` | 4,877,113 | `graduate_students_postdocs_1993.zip` |
+| `85c26d8a1003e5ac0ef363f0e4697ba341fbf0af26862a5e2d771be9b58cd2db` | 5,267,691 | `graduate_students_postdocs_1994.zip` |
+| `84ebfc25b93981c6b536eabc7087a3d7d2ea4205b565ce9e81185e4df4856123` | 5,284,411 | `graduate_students_postdocs_1995.zip` |
+| `f4a2162269609f573b78bc2edc7527813168b396652c2c73b8d8fb4fd729bf66` | 5,322,776 | `graduate_students_postdocs_1996.zip` |
+| `9838f916e9189e66a2d551220211494fdcfd87572fbf2bc70057e8504fd72712` | 5,334,508 | `graduate_students_postdocs_1997.zip` |
+| `88d11a83d4e6d97c761a525cd5629f893f1af62b3bcbe99a70b592928c1d8708` | 5,340,655 | `graduate_students_postdocs_1998.zip` |
+| `4f9c7831c96961177e2f20062c2a7037479a065025e6274917c792a1f13ba75e` | 5,677,969 | `graduate_students_postdocs_1999.zip` |
+| `d39ab2aae3899f33a284109f680ad7ef700540008d341dd925f7360d588651ee` | 5,787,112 | `graduate_students_postdocs_2000.zip` |
+| `af26267db48d8f0eff4f798f260db3bb75057d4dbfb08cd0beca9c67b0909311` | 5,827,502 | `graduate_students_postdocs_2001.zip` |
+| `651f4bf950aa1389c2d2454bcdeef91a0175e68c883b0ce4a9b3d14b27114b5f` | 5,940,163 | `graduate_students_postdocs_2002.zip` |
+| `2ef4c74da995129a599a34f58a9761f2297f0e06057a4d1965fb09dfdac89644` | 6,024,687 | `graduate_students_postdocs_2003.zip` |
+| `6e885ad704e18e7b3dcb6af1d0da04153605e87fd52bf143f9b41beb75ff9b46` | 6,012,831 | `graduate_students_postdocs_2004.zip` |
+| `229833f7af9d592717d6e38255dbcf04d00154f22ba83c6de67f6a11fe4cb2a7` | 6,019,586 | `graduate_students_postdocs_2005.zip` |
+| `d84fce1c33ac11851c67e8652c32005bd8eee74fec23c1f58e1473f73fd781ea` | 6,078,919 | `graduate_students_postdocs_2006.zip` |
+| `9f3d0a4cd80f13623a058fb30bc488e39d8c520438715d03140fc87cc98c027a` | 6,317,665 | `graduate_students_postdocs_2007.zip` |
+| `fd91136ba53dfcdbbdf75fad9bd6ccd5559e4566ed9f38c3fa106366a6fc59d0` | 6,451,893 | `graduate_students_postdocs_2008.zip` |
+| `25337375e1514720c8360f58d6e19a034e0e22dc487d4ba865dd574e2b173333` | 6,555,152 | `graduate_students_postdocs_2009.zip` |
+| `c11c6b80bc71129d7868612d57fd5267ab60ac9a770c0fcdf5746179b78fcba0` | 7,704,149 | `graduate_students_postdocs_2010.zip` |
+| `6019fd57764390d50765a92c1b14cd558bf7c0e975415bb1bad605f352c56ceb` | 7,694,738 | `graduate_students_postdocs_2011.zip` |
+| `7b393a89d2dda6e3b4d2ef4703bf65b560909036c9d96cc7a0ff5e2490a8709d` | 7,759,507 | `graduate_students_postdocs_2012.zip` |
+| `f35322070e0842acd0f56e09005989482369731b757138797bbc0a1148bd1e8d` | 7,774,268 | `graduate_students_postdocs_2013.zip` |
+| `b9df8b83a62c83b9be6ac88eb0f22aca020e080754ab40c36b78b16ed7d4ba85` | 8,087,285 | `graduate_students_postdocs_2014.zip` |
+| `2f8d84d5efe57cb19dc448708babf1dc0f22f4d54528005da3b7c23bef854f24` | 8,192,244 | `graduate_students_postdocs_2015.zip` |
+| `a968662492dd75bf4d67aa9d29390401bcad6ce48fe50416977ce442885a4c60` | 13,607,574 | `graduate_students_postdocs_2016.zip` |
+| `1ef2407fb65d3d770281de1bd5d7510de3823e99d70f08e66ab9932c47b58bf0` | 24,554,018 | `graduate_students_postdocs_2017.zip` |
+| `d2704d1fe417fb6483664532b859c2dca3f91bc5de8555a034870dff4c077791` | 25,227,651 | `graduate_students_postdocs_2018.zip` |
+| `555e6cc047fc08cae8089daa3169c3f113645817a49f99ac103bfd9fbb6e43e4` | 15,393,825 | `graduate_students_postdocs_2019.zip` |
+| `d828d4fa661f075687257e35ed4fc4e930e9c26af63128274a089a4ac37d1628` | 16,168,479 | `graduate_students_postdocs_2020.zip` |
+| `b5e2b0e1d18ddb17edcec7e0ba9ab5dfcb4e658ec02e8fbc76d78003797d17de` | 16,433,146 | `graduate_students_postdocs_2021.zip` |
+| `874b0eade39f11d1eff24db2ffb869ad8a4c00b247ab856b8d6c599841a0a71c` | 16,655,709 | `graduate_students_postdocs_2022.zip` |
+| `585aa6ad7274608453b7eba8f37dcb4966fe42eb0a02290e827062b0c36047d7` | 16,350,970 | `graduate_students_postdocs_2023.zip` |
+| `75f7deea78e7648c055d801980d8c0979613603940c09f4a0f1d71157ef8b7ef` | 17,162,817 | `graduate_students_postdocs_2024.zip` |
+
 ## Regeneration
 
 To recompute the checksum list (Windows PowerShell):
