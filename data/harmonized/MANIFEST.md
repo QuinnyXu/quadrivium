@@ -6,7 +6,7 @@ Parallel to `data/raw/MANIFEST.md` (collected raw data) and `data/reference/MANI
 
 ## What is here, what is not
 
-`data/harmonized/` is **tracked in git**; the five parquets are deposit artifacts. The harmonized parquets are **regenerable artifacts**: a cold reader with the lockfile (`uv.lock`), the raw zips named in `data/raw/MANIFEST.md`, and the reference PDFs in `data/reference/MANIFEST.md` regenerates them bit-equivalently (modulo parquet-writer determinism, which the build holds on a fixed input-and-code-version pair — `etl/build_herd_panel.py` imposes a deterministic `ORDER BY` before the parquet `COPY`).
+`data/harmonized/` is **tracked in git**; the six parquets are deposit artifacts. The harmonized parquets are **regenerable artifacts**: a cold reader with the lockfile (`uv.lock`), the raw zips named in `data/raw/MANIFEST.md`, and the reference PDFs in `data/reference/MANIFEST.md` regenerates them bit-equivalently (modulo parquet-writer determinism, which the build holds on a fixed input-and-code-version pair — `etl/build_herd_panel.py` imposes a deterministic `ORDER BY` before the parquet `COPY`).
 
 The SHA-256s below are the **packaging anchor**: they pin the exact bytes the deposit ships, so a consumer who downloads a deposited parquet can verify its integrity, and a consumer who rebuilds can confirm the rebuild matches the deposit. This is the both/and the build's reproducibility contract (CLAUDE.md §3) and the deposit's citability require — **regenerable by the build, pinned for packaging.** The `etl/`-side treatment of the parquets as regenerable (input SHAs + lockfile + code reproduce them) is unchanged; this MANIFEST is a packaging layer on top, per the decision `docs/methods_notes/herd_panel_etl_scoping.md` §12 reserved for deposit-packaging time (Decision A, Stage 2).
 
@@ -19,6 +19,7 @@ The SHA-256s below are the **packaging anchor**: they pin the exact bytes the de
 | `216b8df8510fc03ce3d425e4395f2691dd723e1c384509675ebd5c276a6e6d81` | 151,158 | `herd_panel_attributes.parquet` | Institution-year Q4/Q5 attribute sibling: medical-school and clinical-trials share and value columns (era-B; era-A NULL). |
 | `33511ffcbf791b931d793ab02a4ee2648b329c38b400f17edd46652220bd8e64` | 3,163,984 | `fedsupport_obligations.parquet` | Federal S&E Support full-series long panel, FY1971–FY2023 (v3.0 re-base): one row per dept × agency × broad/detailed activity × institution × type × state, with native IPEDS UnitID + status. All universes (higher-ed / nonprofit / FFRDC); filter via `institution_type`. Built by `etl/build_fedsupport_obligations.py`. |
 | `5f6e0d215307bf3bb9ea51f0c70c3f3320a5379651c813309769fb12dea8b352` | 730,708 | `fedsupport_institution_year.parquet` | HERD-join-ready aggregate: higher-ed (academic+consortium), matched-UNITID, aggregated to (fiscal_year, ipeds_unitid) with R&D / S&E-support / total obligation columns. |
+| `de8acded3032ef1d31a7473597abae7fc32a8675074e4d0882bff81556f72010` | 22,570,917 | `gss_support.parquet` | GSS funding face (dataset #3 MVP): long-format full-time graduate students by support mechanism × federal agency × fed/nonfed, FY1972–2024, native-UNITID-keyed; `degree_level` (all_grad / masters / doctoral — post-2017 split). Non-zero grain (omitted cell = structural zero). Field names deferred (`gss_code` raw; `field_coarse`/`field_fine` NULL pending the NCSES field-code reference). Built by `etl/build_gss_support.py` from the crosswalk `crosswalks/gss/support_column_map.csv`. Validation: `validation/reports/gss/gss_support_validation.md`. |
 
 ## Regeneration
 
@@ -43,6 +44,9 @@ To regenerate the parquets themselves from raw inputs:
 uv sync
 uv run python etl/build_herd_panel.py        # herd_panel.parquet + herd_panel_attributes.parquet
 uv run python etl/build_herd_personnel.py    # herd_personnel.parquet
+uv run python etl/acquire_gss.py             # GSS zips -> CSV (acquisition, gitignored)
+uv run python etl/build_gss_support_column_map.py   # crosswalks/gss/support_column_map.csv
+uv run python etl/build_gss_support.py       # gss_support.parquet
 ```
 
 If a recomputed hash diverges from this manifest, either the build inputs or code changed (the raw zips, the crosswalks, `era_b_reconstruction_rule.yaml`, the build scripts, or the `uv.lock` runtime pins — regenerate this manifest and re-tag the release) **or** the deposited file drifted from the build (re-verify the inputs against `data/raw/MANIFEST.md` and rebuild). The committed SHA is the ground truth a rebuild must reproduce; do not edit this manifest to match a divergent rebuild without first diagnosing the divergence.
