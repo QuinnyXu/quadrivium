@@ -109,20 +109,34 @@ NUL/UTF-8/CR assertion); this gate is the deposit-wide backstop. The committed
 `.gitattributes` (`* text=auto eol=lf`, `*.parquet binary`) keeps line-ending
 churn out of the repo so the sweep stays green across contributor platforms.
 
-**Scope + known pre-existing debt (surfaced 2026-06-02).** The gate is HARD for
-the **release set** (the generated/edited deposit artifacts of the version being
-tagged) — the v3.0 FedSupport set passes clean. The first repo-wide run of this
-sweep also surfaced **pre-existing debt outside the v3.0 set**, to be cleared in
-a **dedicated normalization commit** (kept separate so it never mixes mass EOL
-churn into a deposit commit): (i) HERD-era spike scratch outputs
-`etl/spikes/*_output.txt` carry UTF-16/NUL corruption (PowerShell-redirect
-capture) — candidates for `.gitignore` (they are scratch evidence, not deposit
-artifacts) or one-time re-save; (ii) some HERD-era deposit text artifacts are
-CRLF (`validation/reports/era_reconciliation_*.md`,
-`crosswalks/_harvest/*.csv`, `data/reference/**/*.csv`,
-`docs/source_documents/herd_fy24_guide.txt`). Until that pass lands, run the
-sweep **scoped to the release set** at tag time; the repo-wide sweep goes green
-after the normalization commit.
+**Scope + EOL/encoding debt — CLEARED (normalization commit, 2026-06-02).** The
+gate is HARD for the **release set** (the generated/edited deposit artifacts of
+the version being tagged); the v3.0 FedSupport set passes clean. The first
+repo-wide run surfaced a **pre-existing HERD-era backlog**, now cleared in a
+dedicated normalization commit (kept separate so mass EOL churn never mixes into
+a deposit commit): (i) the HERD-era spike `etl/spikes/*_output.txt` UTF-16/NUL
+outputs were re-saved to UTF-8/LF and `git add`-ed at the v3.0 stage (all 14,
+cited + uncited); (ii) the CRLF text artifacts
+(`validation/reports/era_reconciliation_*.md`, `crosswalks/_harvest/*.csv`,
+`validation/reports/encoding_substitutions.csv`,
+`docs/source_documents/herd_fy24_guide.txt`) were **already LF at the
+committed-blob level** once `* text=auto eol=lf` landed (the CRLF was
+working-tree-only and never in a commit); the normalization commit killed the
+**generator root cause** so they stay LF without relying on the checkout filter
+(7 HERD-era generators pinned to `newline="\n"` / `lineterminator="\n"`,
+complementing `_load_fedsupport.write_text_clean`). The repo-wide sweep is now
+green.
+
+**Standing `-text` exception — do NOT flag as CR debt.** The externally-sourced
+provenance exports `data/reference/dst-table-builder/*.csv` and `*.txt` are
+**intentionally CRLF** (as-downloaded from NSF NCSES; byte-pinned to
+`data/reference/MANIFEST.md`) and marked `-text` in `.gitattributes`. The
+working-tree CR sweep (first block above) **false-positives** on them; exclude
+`-text` paths from the CR check (filter `git ls-files --eol` on `attr/-text`, or
+`git check-attr -text -- <path>`) — never "normalize" them to LF, which would
+re-break the MANIFEST SHA. Their correctness is gated the other way: the
+committed-blob SHA-256 must equal the MANIFEST pin (see `seeds/overrides.md`
+"reproducible ≠ valid" — the inverted-provenance finding).
 
 > **Lesson (v3.0 FedSupport re-base, 2026-06-02):** `identity_spine_match_rate.md`
 > was caught at pre-tag as UTF-16/NUL-corrupt (8,257 NUL bytes) — content correct,

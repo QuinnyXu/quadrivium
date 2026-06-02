@@ -305,7 +305,9 @@ def _append_encoding_log(source_file: str, substitutions: list[dict]) -> None:
         return
     mode = "a" if _encoding_log_initialized else "w"
     with path.open(mode, newline="", encoding="utf-8") as f:
-        writer = _csv.DictWriter(f, fieldnames=_ENCODING_LOG_FIELDS)
+        # lineterminator="\n": LF-only — csv's default "\r\n" emits CRLF on
+        # Windows, a cross-OS §3 SHA hazard for this deposit artifact (A1b).
+        writer = _csv.DictWriter(f, fieldnames=_ENCODING_LOG_FIELDS, lineterminator="\n")
         if not _encoding_log_initialized:
             writer.writeheader()
             _encoding_log_initialized = True

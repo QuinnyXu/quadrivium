@@ -145,7 +145,7 @@ def main() -> None:
 
     # Write the report.
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with OUTPUT_PATH.open("w", encoding="utf-8") as fh:
+    with OUTPUT_PATH.open("w", encoding="utf-8", newline="\n") as fh:
         fh.write(_render_report(totals, yoy, cum, verdict, verdict_text))
     print(f"\nWrote: {OUTPUT_PATH}")
 

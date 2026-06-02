@@ -440,7 +440,7 @@ def write_diagnostic_1_report(
       "(`era_b_institution_total`). Same 10 institutions as the parent report.")
     a("")
 
-    OUTPUT_DIAG1.write_text("\n".join(lines), encoding="utf-8")
+    OUTPUT_DIAG1.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 def write_diagnostic_2_report(
@@ -578,7 +578,7 @@ def write_diagnostic_2_report(
       "verbatim from the sibling diagnostic.")
     a("")
 
-    OUTPUT_DIAG2.write_text("\n".join(lines), encoding="utf-8")
+    OUTPUT_DIAG2.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 # ---------------------------------------------------------------------------

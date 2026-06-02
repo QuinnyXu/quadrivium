@@ -712,7 +712,7 @@ def write_report(
       "2008–2011. Substitutions documented above.")
     a("")
 
-    OUTPUT_PATH.write_text("\n".join(lines), encoding="utf-8")
+    OUTPUT_PATH.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 if __name__ == "__main__":

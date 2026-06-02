@@ -40,7 +40,7 @@ def extract() -> int:
         parts.append(f"\n\n===== PAGE {i} =====\n\n{text}")
 
     TXT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    TXT_PATH.write_text("\n".join(parts), encoding="utf-8")
+    TXT_PATH.write_text("\n".join(parts), encoding="utf-8", newline="\n")
     print(f"wrote {TXT_PATH} ({n_pages} pages, {TXT_PATH.stat().st_size:,} bytes)")
     return 0
 

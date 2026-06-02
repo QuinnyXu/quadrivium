@@ -152,7 +152,9 @@ def main() -> int:
     # bucket's range and the per-label observation totals across all years.
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUTPUT_PATH.open("w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
+        # lineterminator="\n": LF-only output regardless of platform — csv's
+        # default "\r\n" would emit CRLF on Windows (cross-OS §3 SHA hazard; A1b).
+        w = csv.writer(f, lineterminator="\n")
         w.writerow([
             "year_range_start", "year_range_end", "raw_row_label",
             "n_years_observed", "first_year_seen", "last_year_seen",

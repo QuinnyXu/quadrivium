@@ -13,3 +13,13 @@
 
 # Vector figures are text (SVG) but pin LF.
 *.svg text eol=lf
+
+# Externally-sourced provenance exports — preserve the as-downloaded bytes
+# verbatim (these arrive CRLF from the NSF NCSES Table Builder). -text turns
+# OFF eol normalization so the committed blob stays bit-exact to its SHA-256
+# pin in data/reference/MANIFEST.md, and a cold reader re-fetching from the
+# canonical URL verifies the same hash. The blanket "* text=auto eol=lf" above
+# would otherwise LF-strip them and break the MANIFEST SHA. (A1b per-file
+# opt-out; see seeds/overrides.md "reproducible ≠ valid" kill condition.)
+data/reference/dst-table-builder/*.csv -text
+data/reference/dst-table-builder/*.txt -text
