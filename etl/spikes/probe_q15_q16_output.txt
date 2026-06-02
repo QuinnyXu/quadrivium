@@ -1,4 +1,4 @@
-﻿=== Pre-2022 era-B Q15/Q16 sanity check ===
+=== Pre-2022 era-B Q15/Q16 sanity check ===
   2010: 0 Q15/Q16 rows
   2012: 0 Q15/Q16 rows
   2015: 0 Q15/Q16 rows

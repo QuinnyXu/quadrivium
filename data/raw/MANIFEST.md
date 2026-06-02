@@ -167,6 +167,33 @@ fallback only.
 
 ## Staged files — `data/raw/fedsupport/` (Federal S&E Support, dataset #2)
 
+### v3.0 re-base — full-series Build Table export (PRIMARY SOURCE, FY1971–FY2023)
+
+Staged: 2026-06-01 (maintainer). The deposit build source as of v3.0 is the
+**full-series NCSES Build Table export** — 53 contiguous fiscal years
+(FY1971–FY2023), 434,547 long rows, dimensions `Year × Federal Department ×
+Federal Agency × Broad Category × Detailed Category × Institution × IPEDS UnitID
+× Detailed Institution Type × State → Fed Obligations for S&E` (kUSD, current $).
+It is a clean RFC-4180 CSV (CSV-native — §3 satisfied without xlsx→CSV
+conversion); `etl/_load_fedsupport.py` reads it via `read_csv_auto`. This export
+**supersedes** the four FY2020–FY2023 Table 12 slices (re-base decision (b),
+`docs/fedsupport_rebase_scope.md`), which are retained below as **audit
+siblings**. The export reconciles to every published Table 12 higher-ed anchor
+within sum-rounding (`validation/reports/fedsupport/anchor_reconciliation.md`).
+
+`data/raw/fedsupport/` is **gitignored** (payload); these MANIFEST entries are
+tracked. The CSV ships inside the staged `.zip`; the query-definition JSON and
+the table-description txt are retained as provenance siblings.
+
+| SHA-256 | Bytes | File | Role |
+|---------|-------|------|------|
+| `3cab4ebe3d472ba4a1a8d23c1ecccc423ff027cc8c2e77738c63025b22fd9536` | 90,133,450 | `ncses_table_srv_data_FSS_2026-06-01T04_05_16Z.zip` | source archive (contains the CSV + txt) |
+| `796a55c325e51724cd5313e408fdefd5e57ba6f2552002bd10f030f856aae6c8` | 90,132,415 | `ncses_table_raw_data_FSS_2026-06-01T04_05_16Z.csv` | **deposit build input** (extracted) |
+| `22766c781db82cf8bf0539b4aa6286eba5fef4cc07a802f5801a16ee18131312` | 496,777 | `ncses_cust_table_FSS_2026-06-01T04_05_57Z.json` | query-definition provenance sibling |
+| `07c3e89ebe3ffd3046c9f5318a1f0bb23dc22317a382f2e3658a532194bf781e` | 713 | `table-description-FSS.txt` | table-description provenance sibling |
+
+### MVP Table 12 slices (FY2020–FY2023) — now AUDIT SIBLINGS
+
 Generated: 2026-05-29 (Skipper, HD 3.2 MVP). Mirrors the HERD zip-provenance
 model with one difference: the deposit artifact is a **CSV**, not the source
 xlsx. NSF publishes Federal S&E Support Table 12 as **xlsx** (+ PDF + ZIP);

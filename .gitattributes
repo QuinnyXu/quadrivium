@@ -1,0 +1,15 @@
+# Normalize all text to LF in the repository (and on checkout), so line-ending
+# churn never enters the deposit and the §3 cross-OS reproducibility contract
+# holds (a rebuild on Windows or Linux yields the same bytes). Paired with the
+# release-runbook A1b text-validity sweep and etl/_load_fedsupport.write_text_clean.
+* text=auto eol=lf
+
+# Binary deposit artifacts — never normalize, never diff as text.
+*.parquet binary
+*.zip      binary
+*.pdf      binary
+*.png      binary
+*.sas7bdat binary
+
+# Vector figures are text (SVG) but pin LF.
+*.svg text eol=lf

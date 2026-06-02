@@ -1,5 +1,12 @@
 # HD 3.2 — Federal S&E Support: Table 12 parse reconciliation receipt
 
+> **SUPERSEDED (v3.0 re-base, 2026-06-02).** This receipt validated the MVP's
+> positional parse of the four FY2020–FY2023 Table 12 xlsx slices. The re-base
+> supersedes Table 12 with the full-series NCSES Build Table export (decision
+> (b)); the Table 12 slices are now audit siblings. The live anchor-
+> reconciliation receipt is `anchor_reconciliation.md`. Retained as the MVP-era
+> record.
+
 **Parse validation receipt (RH validation).**
 Author: Skipper. Date: 2026-05-29. Generated from
 `etl/build_fedsupport_obligations.py` (deterministic build output).

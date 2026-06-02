@@ -2,7 +2,7 @@
 
 Open-source harmonization of U.S. higher-education survey data into reproducible analytical panels.
 
-The current scope is NSF HERD (Higher Education Research and Development survey), FY 1972–2024. The roadmap covers IPEDS, NSF GSS, and other NCSES surveys.
+The current scope is two integrated datasets: **NSF HERD** (Higher Education Research and Development survey, FY 1972–2024) — the R&D expenditure-OUT face — and **Federal S&E Support** (NSF Survey of Federal Science and Engineering Support to Universities, Colleges, and Nonprofit Institutions, FY 1971–2023) — the federal funding-IN face — joined on the institution-year via a cross-survey identity spine. The roadmap continues with NSF GSS (dataset #3) and the IPEDS IC snapshot (dataset #4), then other NCSES surveys.
 
 ## What makes this different
 
@@ -23,6 +23,8 @@ This is not a bridge across discontinuities. It is the discipline of making oper
 - **`data/harmonized/herd_panel.parquet`** — 50-year field-level R&D expenditure panel (FY 1975–2024), two parallel reconstructed series across the 2010 era boundary.
 - **`data/harmonized/herd_panel_attributes.parquet`** — institution-year Q4/Q5 attribute sibling: medical-school and clinical-trials share and value columns.
 - **`data/harmonized/herd_personnel.parquet`** — Q15 headcount + Q16 FTE personnel panel for FY 2022–2024 (the microdata-bearing years; NCSES Data Table 26 publishes institution totals for FY 2020–2024, but FY 2020–2021 are aggregate-only, with no per-institution microdata). Carries no `quality_flag` column — a documented imputation-provenance asymmetry with the financial panel (see [`docs/methods_notes/herd_panel_etl_scoping.md`](docs/methods_notes/herd_panel_etl_scoping.md) §12).
+- **`data/harmonized/fedsupport_obligations.parquet`** — Federal S&E Support full-series long panel (FY 1971–2023): federal S&E obligations by department × agency × broad/detailed activity × institution × type × state, with a native IPEDS UnitID and a `na_*`/`no_match`/`matched` status column. All universes (higher-ed / nonprofit / FFRDC) are carried; filter via `institution_type`.
+- **`data/harmonized/fedsupport_institution_year.parquet`** — HERD-join-ready aggregate: higher-ed (academic + consortium), matched-UNITID, aggregated to `(fiscal_year, ipeds_unitid)` with R&D / S&E-support / total obligation columns. R&D-broad is the like-for-like counterpart to HERD federal R&D expenditure. See the discontinuity methods note [`docs/methods_notes/fedsupport/discontinuities.md`](docs/methods_notes/fedsupport/discontinuities.md).
 
 Companion validation reports in `validation/reports/` carry the reconciliation against published NSF / NCSES ground truth.
 
@@ -32,8 +34,10 @@ Companion validation reports in `validation/reports/` carry the reconciliation a
 git clone https://github.com/QuinnyXu/quadrivium.git quadrivium
 cd quadrivium
 uv sync
-uv run python etl/build_herd_panel.py        # rebuild financial + attribute parquets
-uv run python etl/build_herd_personnel.py    # rebuild personnel parquet
+uv run python etl/build_herd_panel.py             # rebuild HERD financial + attribute parquets
+uv run python etl/build_herd_personnel.py         # rebuild HERD personnel parquet
+uv run python etl/build_fedsupport_obligations.py # rebuild Federal S&E Support panels
+uv run python etl/build_fedsupport_identity_spine.py  # rebuild the cross-survey identity spine
 ```
 
 Requirements: Python 3.12 and `uv` (installed locally; this repo pins `uv` 0.11.8 in the lockfile and runtime deps to `duckdb==1.5.2` + `pypdf==6.10.2`).

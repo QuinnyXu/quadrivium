@@ -53,6 +53,85 @@ Every **generator-emitted** deposit artifact must rebuild **bit-equivalently** (
 
 > **Lesson (HD 3.2, 2026-05-30):** the determinism check must cover **every** generated artifact, not just the one under active edit. The FedSupport spine receipt got the two-build check because it was being edited; the spine CSV — equally generator-emitted, equally a deposit artifact — did not, and shipped a non-deterministic SHA into a commit (the `herd_inst_name_long` alias was picked by unordered DuckDB iteration when ≥2 HERD names shared a UNITID). Non-determinism hides in *finished* artifacts precisely because they stop being rebuilt. The fix: a manufactured display value ships with a **documented, total-order tiebreak**; the gate: enumerate-and-two-build-SHA the whole generated set before push. See `seeds/overrides.md` (6th calibration finding).
 
+### A1b — ⚠️ HARD GATE: text-validity sweep (UTF-8, LF, zero NUL) — sibling to A1
+
+**Byte-stability ≠ text-validity.** A1 proves an artifact rebuilds
+byte-identically; it does NOT prove the bytes are valid text. A stray PowerShell
+`>`/`*>` redirect (UTF-16LE) or a Windows text-mode write (CRLF on Windows, LF
+on Linux — which also breaks the §3 cross-OS SHA contract) can ship a
+**deterministically corrupt** file straight through A1: the determinism gate
+passes it because it is *reproducibly* corrupt.
+
+**Procedure.** For EVERY generated/edited **text** deposit artifact (receipts,
+crosswalk CSVs, methods notes, MANIFESTs, `.zenodo.json`, `CITATION.cff`,
+`README.md`), assert: (i) **zero NUL bytes**, (ii) **decodes as UTF-8**, (iii)
+**LF-only** (no `\r`). Any failure blocks the deposit.
+
+```powershell
+Get-ChildItem -Recurse -File -Include *.md,*.csv,*.json,*.cff,*.yaml,*.py |
+  Where-Object { $_.FullName -notmatch '\\(\.venv|\.git|__pycache__)\\' } |
+  ForEach-Object {
+    $b = [System.IO.File]::ReadAllBytes($_.FullName)
+    $nul = ($b | Where-Object { $_ -eq 0 }).Count
+    if ($nul -gt 0) { "NUL  $($_.FullName)" }
+    if ($b -contains 13) { "CR   $($_.FullName)" }   # \r => not LF-only
+  }
+# Any output => STOP. Empty => pass.
+```
+
+**⚠️ Gate on the INDEX/COMMITTED blob, not the working tree — the tag captures
+what is committed.** The sweep above reads the *working tree*; a clean working
+tree does NOT prove the staged/committed bytes are clean (a re-save that was
+never `git add`-ed, or a stale index, leaves a corrupt blob that the tag then
+freezes). Verify the bytes git will actually archive:
+
+```powershell
+git diff --cached --name-only | Where-Object { $_ -match '\.(md|csv|json|cff|yaml|txt)$' } |
+  ForEach-Object {
+    $b = git cat-file -p ":$_" | Out-String   # the INDEX blob, what the commit/tag captures
+    if ($b -split '' -contains [char]0) { "NUL in staged blob: $_" }
+  }
+# Authoritative. Empty => every staged text blob is clean.
+```
+
+> **Do NOT use `git diff --cached --numstat` as the staged-bytes gate.** It diffs
+> INDEX-vs-HEAD and reports `-  -` (binary) if *either side* is binary — so a
+> file whose **HEAD** blob is still UTF-16/NUL shows `-  -` even when the staged
+> blob is perfectly clean UTF-8. (Verified v3.0: a clean re-save+add still showed
+> `-  -` under numstat AND `--text`, while `git cat-file -p :path` proved the
+> staged blob NUL-free.) numstat goes numeric only after the corrupt HEAD is
+> superseded by a commit; it cannot gate the *pre*-commit index. Use
+> `git cat-file -p :path` (above).
+
+The receipt/CSV **generators enforce this at write time** via
+`etl/_load_fedsupport.write_text_clean` (raw-bytes UTF-8/LF write + read-back
+NUL/UTF-8/CR assertion); this gate is the deposit-wide backstop. The committed
+`.gitattributes` (`* text=auto eol=lf`, `*.parquet binary`) keeps line-ending
+churn out of the repo so the sweep stays green across contributor platforms.
+
+**Scope + known pre-existing debt (surfaced 2026-06-02).** The gate is HARD for
+the **release set** (the generated/edited deposit artifacts of the version being
+tagged) — the v3.0 FedSupport set passes clean. The first repo-wide run of this
+sweep also surfaced **pre-existing debt outside the v3.0 set**, to be cleared in
+a **dedicated normalization commit** (kept separate so it never mixes mass EOL
+churn into a deposit commit): (i) HERD-era spike scratch outputs
+`etl/spikes/*_output.txt` carry UTF-16/NUL corruption (PowerShell-redirect
+capture) — candidates for `.gitignore` (they are scratch evidence, not deposit
+artifacts) or one-time re-save; (ii) some HERD-era deposit text artifacts are
+CRLF (`validation/reports/era_reconciliation_*.md`,
+`crosswalks/_harvest/*.csv`, `data/reference/**/*.csv`,
+`docs/source_documents/herd_fy24_guide.txt`). Until that pass lands, run the
+sweep **scoped to the release set** at tag time; the repo-wide sweep goes green
+after the normalization commit.
+
+> **Lesson (v3.0 FedSupport re-base, 2026-06-02):** `identity_spine_match_rate.md`
+> was caught at pre-tag as UTF-16/NUL-corrupt (8,257 NUL bytes) — content correct,
+> encoding not. A1 had passed it (deterministically corrupt). The whole generated
+> set was also CRLF (Windows text-mode), a latent cross-OS SHA break. Fix:
+> generators write raw UTF-8/LF bytes with a read-back assertion; this A1b sweep
+> + `.gitattributes` are the deposit-wide backstop. See `seeds/overrides.md`
+> (reproducible ≠ valid).
+
 ### A2 — repo-prep checks
 
 CONTRIBUTING.md present, repo-URL fill, doc reconciliation (CITATION.cff / README / `.zenodo.json` consistent), in-doc commit-hash references reconciled if Phase 0 ran. (The harmonized-parquet SHA gate against `data/harmonized/MANIFEST.md` runs again as the **first command of B1** — the irrevocability boundary — so it is listed there.)

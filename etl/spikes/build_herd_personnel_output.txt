@@ -1,4 +1,4 @@
-﻿Wrote data\harmonized\herd_personnel.parquet (108,811 bytes)
+Wrote data\harmonized\herd_personnel.parquet (108,811 bytes)
 ======================================================================
 herd_personnel.parquet sanity report (data\harmonized\herd_personnel.parquet)
 ======================================================================
