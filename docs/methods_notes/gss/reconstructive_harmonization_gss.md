@@ -29,6 +29,11 @@ redesign drops measured enrollment 5.2% in a single year. A reader who differenc
 two GSS numbers across any of these lines, unaware, will mistake a survey change for
 a real one. The rest of this note is about making that impossible.
 
+(The smaller FY2024 dip in the institution line is *not* a fourth discontinuity: it
+is the latest, still-collecting cycle — ~52 mostly-small institutions not yet in the
+data, together under 1% of enrollment, while the core cohort is present and grew.
+Treat FY2024 institution coverage as preliminary.)
+
 ## 2. What the harmonized GSS layer is
 
 Three long-format panels, FY1972–2024, each keyed on the **native IPEDS UnitID**
@@ -58,8 +63,7 @@ finding is that they are **different kinds of break**, and the figure says so.
 ![GSS boundary decomposition](figures/gss_boundary_decomposition.png)
 
 **The 2017 redesign moved the count from *within* institutions, not *across* them:
-of the −35,713 net, −34,254 is the same 708 institutions counting differently (a
-definitional change at the redesign) and only −1,459 is which institutions were
+of the −35,713 net, −34,254 is the same 708 institutions counting differently (definitional-dominated at the redesign — bounded 5–8%, the exact real-vs-definitional split inseparable; see clause-(c)) and only −1,459 is which institutions were
 surveyed.** The 2016→2017
 drop is the survey changing what it counts (and adding a master's/doctoral split that
 is purely additive — post-2017 all-grad equals masters + doctoral exactly). By

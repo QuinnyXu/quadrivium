@@ -93,6 +93,12 @@ for x, lab, yf, ha in [(1985.5, "1984–87\nframe contraction", 0.97, "center"),
     ax1.annotate(lab, (x, ax1.get_ylim()[1] * yf), ha=ha, va="top", fontsize=7.5, color="#444")
 for x in (1984, 2014, 2017):
     ax1.axvspan(x - 0.4, x + 0.4, color="grey", alpha=0.12)
+# FY2024 end-of-series note: latest cycle, still collecting (~52 small institutions
+# absent, <1% of enrollment) — not a fourth discontinuity.
+ax2.annotate("FY2024: latest cycle,\nstill collecting (small\ninstitutions absent)",
+             (yrs[-1], insts[-1]), textcoords="offset points", xytext=(-6, 24),
+             ha="right", va="bottom", fontsize=6.3, color="#c55a11",
+             arrowprops=dict(arrowstyle="->", color="#c55a11", lw=0.7))
 ax1.set_title("GSS is frame-unstable: three discontinuities punctuate FY1972–2024", fontsize=10)
 save(fig, "gss_frame_instability.png")
 
@@ -113,7 +119,7 @@ ax.axhline(0, color="black", lw=0.8)
 ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=9)
 ax.set_ylabel("Enrollment change (thousands)")
 ax.set_title("Each GSS boundary splits into fixed-cohort vs frame components\n"
-             "(♦ net): 2017 is a definitional cohort drop; 1984–87 a frame contraction masking real growth",
+             "(♦ net): 2017 is a definitional-dominated cohort drop; 1984–87 a frame contraction masking real growth",
              fontsize=9.5)
 ax.legend(fontsize=8, loc="upper right")
 save(fig, "gss_boundary_decomposition.png")
