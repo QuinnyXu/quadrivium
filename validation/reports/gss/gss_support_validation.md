@@ -81,8 +81,12 @@ masters 158,200.
 
 ## 6. Known scope (MVP)
 
-- **Field names deferred.** `gss_code` (131 distinct) / `hdg_code` carried raw;
-  `field_coarse`/`field_fine` NULL pending the NCSES GSS field-code reference.
+- **Field names (HD 4.3 step 4, landed).** `field_coarse`/`field_fine` populated
+  for the 91 2023-active `gss_code`s (84.5% of rows) via
+  `crosswalks/gss/field_code_map.csv` — count-matched to NSF 25-317 Table 4-3
+  (`field_fine` = detailed field, `field_coarse` = SEH super-broad). The ~40
+  historical-only codes + finer ~10-way broad subfields remain NULL pending the
+  dedicated NCSES TOD/PUF reference (§4, no invented mappings).
 - **Support sheet only.** The Race (enrollment/demographic) and PD_NFR (postdoc)
   siblings are deferred to later increments.
 - **Suppression.** No empty/suppressed support cells observed (2023 fully numeric);

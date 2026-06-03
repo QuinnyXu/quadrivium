@@ -67,7 +67,7 @@ def build_year(con, path: str, xcols: set[str]) -> int:
         INSERT INTO panel
         SELECT
           {sel_ids},
-          CAST(NULL AS VARCHAR) AS field_coarse, CAST(NULL AS VARCHAR) AS field_fine,
+          fc.fc AS field_coarse, fc.ff AS field_fine,
           {year} AS year, '{era}' AS era,
           'full_time' AS enrollment_status,
           x.degree_level, x.gender, x.support_mechanism, x.source_class, x.funding_agency,
@@ -77,6 +77,7 @@ def build_year(con, path: str, xcols: set[str]) -> int:
           '{os.path.basename(path)}' AS source_file,
           CAST(NULL AS VARCHAR) AS notes
         FROM long_y l JOIN xwalk x USING (source_column)
+        LEFT JOIN fcmap fc ON l."gss_code" = fc.gss_code
     """)
     return con.execute("SELECT COUNT(*) FROM long_y").fetchone()[0]
 
@@ -84,6 +85,10 @@ def build_year(con, path: str, xcols: set[str]) -> int:
 def main() -> int:
     con = duckdb.connect()
     xcols = crosswalk_columns(con)
+    con.execute(f"CREATE OR REPLACE TABLE fcmap AS SELECT gss_code, "
+                f"NULLIF(field_coarse,'') fc, NULLIF(field_fine,'') ff FROM "
+                f"read_csv('{(ROOT / 'crosswalks' / 'gss' / 'field_code_map.csv').as_posix()}', "
+                f"header=true, all_varchar=true)")
     con.execute("""
         CREATE TABLE panel (
           unitid VARCHAR, institution_name VARCHAR, gss_school_id VARCHAR,

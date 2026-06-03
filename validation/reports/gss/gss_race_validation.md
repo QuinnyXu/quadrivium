@@ -50,5 +50,8 @@ spot-year (2023 FT: 309,437 + 289,151 = 598,588).
 | 2023 | 683/702 = 97.3% | 814,389 / 818,095 = 99.5% |
 
 ## 4. Reproducibility
-A1: byte-identical across 3 consecutive builds. Runtime `duckdb` + `pypdf`.
-Field names deferred to the field-code crosswalk (HD 4.3 step 4).
+A1: byte-identical across 3 consecutive builds (re-confirmed after the field-code
+join; §5 values unchanged). Runtime `duckdb` + `pypdf`. `field_coarse`/`field_fine`
+populated for the 91 2023-active `gss_code`s (83.5% of rows) via
+`crosswalks/gss/field_code_map.csv` (count-matched to Table 4-3); historical-only
+codes NULL pending the dedicated TOD reference (HD 4.3 step 4).

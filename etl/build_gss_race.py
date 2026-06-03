@@ -43,14 +43,15 @@ def build_year(con, path, xcols):
     sel_ids = ", ".join(f'l."{src}" AS {dst}' for src, dst in ID_MAP.items() if src in header)
     con.execute(f"""INSERT INTO panel
         SELECT {sel_ids},
-          CAST(NULL AS VARCHAR) AS field_coarse, CAST(NULL AS VARCHAR) AS field_fine,
+          fc.fc AS field_coarse, fc.ff AS field_fine,
           {year} AS year, '{era}' AS era,
           x.enrollment_status, x.degree_level, x.gender, x.race,
           CAST(ROUND(CAST(l.value AS DOUBLE)) AS BIGINT) AS value,
           'headcount' AS unit, 'count' AS value_type, 'reported' AS quality_flag,
           'Race' AS source_sheet, '{os.path.basename(path)}' AS source_file,
           CAST(NULL AS VARCHAR) AS notes
-        FROM long_y l JOIN xwalk x USING (source_column)""")
+        FROM long_y l JOIN xwalk x USING (source_column)
+        LEFT JOIN fcmap fc ON l."gss_code" = fc.gss_code""")
     return con.execute("SELECT COUNT(*) FROM long_y").fetchone()[0]
 
 
@@ -59,6 +60,10 @@ def main() -> int:
     con.execute(f"CREATE OR REPLACE TABLE xwalk AS SELECT * FROM "
                 f"read_csv('{XWALK.as_posix()}', header=true, all_varchar=true)")
     xcols = {r[0] for r in con.execute("SELECT source_column FROM xwalk").fetchall()}
+    con.execute(f"CREATE OR REPLACE TABLE fcmap AS SELECT gss_code, "
+                f"NULLIF(field_coarse,'') fc, NULLIF(field_fine,'') ff FROM "
+                f"read_csv('{(ROOT / 'crosswalks' / 'gss' / 'field_code_map.csv').as_posix()}', "
+                f"header=true, all_varchar=true)")
     con.execute("""CREATE TABLE panel (
         unitid VARCHAR, institution_name VARCHAR, gss_school_id VARCHAR, gss_code VARCHAR,
         hdg_code VARCHAR, state VARCHAR, hbcu_flag VARCHAR, land_grant_flag VARCHAR,

@@ -55,8 +55,11 @@ sex (1-2a) also exact: male 37,458 + female 28,392 = 65,850. **Verdict: PASS.**
 | 2023 | 334/341 = 97.9% | 64,192 / 65,850 = 97.5% |
 
 ## 3. Reproducibility
-A1: byte-identical across 3 consecutive builds. Runtime `duckdb` + `pypdf`.
-Field names deferred to the field-code crosswalk (HD 4.3 step 4).
+A1: byte-identical across 3 consecutive builds (re-confirmed after the field-code
+join; §5 values unchanged). Runtime `duckdb` + `pypdf`. `field_coarse`/`field_fine`
+populated for the 91 2023-active `gss_code`s (69.0% of rows) via
+`crosswalks/gss/field_code_map.csv` (count-matched to Table 4-3); historical-only
+codes NULL pending the dedicated TOD reference (HD 4.3 step 4).
 
 The NIH dominance of postdoc federal support (18,732 / 32,155 = 58%) vs. the more
 balanced NIH/NSF split among graduate students is the funding-of-human-capital
