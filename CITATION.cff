@@ -67,4 +67,4 @@ keywords:
 identifiers:
   - type: doi
     value: "10.5281/zenodo.20404785"
-    description: "Concept DOI (all versions) of the quadrivium integrated database. This file is the single source of truth for the DOI. Version DOIs are minted by Zenodo per release; for the record, the v2.0.0 version DOI is 10.5281/zenodo.20469884 and the v1.0.0 (HERD-only) version DOI was 10.5281/zenodo.20404786."
+    description: "Concept DOI (all versions) of the quadrivium integrated database. This file is the single source of truth for the DOI. Version DOIs are minted by Zenodo per release; for the record: v4.0.0 = 10.5281/zenodo.20530949, v3.0.0 = 10.5281/zenodo.20514381, v2.0.0 = 10.5281/zenodo.20469884, v1.0.0 (HERD-only) = 10.5281/zenodo.20404786."
