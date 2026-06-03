@@ -87,3 +87,35 @@ masters 158,200.
   siblings are deferred to later increments.
 - **Suppression.** No empty/suppressed support cells observed (2023 fully numeric);
   a suppression flag is a future refinement if early years differ.
+
+## 7. §5 external published-ground-truth anchor — PASS (HD 4.3 step 1, the hard gate)
+
+Reconciled against the NCSES GSS 2023 report **NSF 25-317** (read-once anchors,
+SHA-pinned in `data/reference/MANIFEST.md`; not loaded at runtime). This closes
+the MVP's open §5 gap and validates the XLSX-authoritative acquisition decision
+against published ground truth — the foundation all three GSS panels rest on.
+
+- **Table 1-7 (detailed federal source by agency) — federal total, full series:**
+  the parquet federal total (summed over agencies) equals the published "Total"
+  column for **all 49 years FY1975–2023 — 0 mismatches** (e.g. 1975 = 47,055;
+  1990 = 59,258; 2008 = 78,464; 2016 = 71,955; 2023 = 82,764).
+- **Table 1-7 — 2023 by agency, exact:** DOD 9,171 · DOE 5,757 · NIH 23,172 ·
+  HHS-other 3,314 · NASA 2,178 · NSF 21,209 · USDA 3,332 · other-federal 14,631
+  (Σ = 82,764). All 8 cells match.
+- **Table 1-6 (primary source) — 2023, exact:** federal 82,764 · institutional
+  235,491 · nonfederal-domestic 22,852 · foreign 3,394 · personal/self 254,087
+  (Σ = 598,588). Our `source_class='nonfederal'` (261,737) = institutional +
+  nonfederal-domestic + foreign — matches the published partition.
+- **Table 1-8 (primary mechanism) — 2023:** fellowship 50,387 · research-assistant
+  133,930 · teaching-assistant 85,312 · traineeship 11,872 — all exact. **Note
+  (definitional, reconciles):** our `support_mechanism='other'` (317,087) equals
+  the published *Other types of support* = "Other" (63,000) + "Self-support"
+  (254,087); GSS's other-mechanism category combines the two, which Table 1-8
+  splits. Our `source_class='self_support'` (254,087) carries the self component,
+  so 317,087 = 63,000 + 254,087 holds.
+
+**Verdict: PASS.** Every published cell reconciles exactly (the one apparent
+mechanism gap is a documented GSS aggregation nuance, not a discrepancy). The
+GSS support semantics are **primary-source** (each FT student counted once →
+fed + nonfed + self = the FT total). XLSX-authoritative is validated; HD 4.3
+steps 2–3 (Race, PD_NFR) proceed.

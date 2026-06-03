@@ -93,6 +93,33 @@ PANEL_SKIPPER §8 entries 2026-05-20 and 2026-05-21).
 | `dst-table-builder-FY2010.csv` (if Table Builder path applies) | FY 2010 grid anchor — pending item-2 substrate disposition | Blocked on item-2 regime-stability finding |
 | `dst-table-builder-FY2008.csv` (if Table Builder path applies) | FY 2008 grid anchor — pending item-2 substrate disposition | Blocked on item-2 regime-stability finding |
 
+## Staged files — `data/reference/gss/` (GSS §5 ground-truth anchors, dataset #3)
+
+Published statistical tables from the NCSES GSS 2023 report **NSF 25-317**
+(`ncses.nsf.gov/pubs/nsf25317/table/{N}`), staged 2026-06-02 as the §5
+published-ground-truth anchors for the GSS harmonized panels (the analogue of
+HERD Table 26 and the FedSupport Table 12 audit siblings). **Read-once anchors:**
+the build reads them for the §5 reconciliation only — they are **not** converted
+or loaded at runtime, and the deposit runtime stays `duckdb` + `pypdf`. The
+`gss_support.parquet` reconciliation against Tables 1-6 / 1-7 / 1-8 **passed**
+(federal-total series 49/49 years FY1975–2023 exact; 2023 agency / source /
+mechanism cells exact — see `validation/reports/gss/gss_support_validation.md` §7
+and `seeds/overrides.md` §12).
+
+| SHA-256 | Bytes | File |
+|---------|-------|------|
+| `b5ef632621b4dd459ea3f63d54c775416d63105237377c5d667fad5f3cae4d30` | 17,219 | `nsf25317-tab001-002a.xlsx` (Table 1-2a — sex of grad students / postdocs / NFRs, 1977–2023) |
+| `24999d5190cd37abd34a3676e9cfe40435226296d2909c998dd19f94c2705f3c` | 14,716 | `nsf25317-tab001-006.xlsx` (Table 1-6 — primary source of support, FT grad, 1975–2023) |
+| `40255ea19fe7310a1ad223ba2db950c57dd4439d1eeb970f0ab39ae36866b9af` | 18,060 | `nsf25317-tab001-007.xlsx` (Table 1-7 — detailed federal source by agency, FT grad, 1975–2023) |
+| `1d41c4560e1f1508f24bb51eb99bf5581aa83bb846645b7f81b78fc897a95c03` | 15,955 | `nsf25317-tab001-008.xlsx` (Table 1-8 — primary mechanism of support, FT grad, 1975–2023) |
+| `f2278321557edeb26ee2dd431e1ba300266f430d31507d6a05b2399d34dbb024` | 13,997 | `nsf25317-tab001-009b.xlsx` (Table 1-9b — postdoctoral appointees by broad field, 1979–2023) |
+| `282baf38b90f27468a43d19f6538b97dc5f82e1979e3496c15f1228f7c82494c` | 17,273 | `nsf25317-tab001-011a.xlsx` (Table 1-11a — master's enrollment by detailed field, 2017–23) |
+| `9dee46c772ae123c3092fa4ba6dda4ad4e62a2fbcc0596bfc7a997d4e7ef1017` | 17,176 | `nsf25317-tab001-011b.xlsx` (Table 1-11b — doctoral enrollment by detailed field, 2017–23) |
+| `5c8191b401d7aa20851eabcd7aa3bce0ebb8824049f88b26502c772910faf97b` | 20,888 | `nsf25317-tab002-004.xlsx` (Table 2-4 — grad students by broad field, degree, citizenship, ethnicity, race, 2023) |
+| `cf41573dfb9951892cded09e55d9b3edcd7361b9dc372e7882a4c913774f1993` | 9,968 | `nsf25317-tab003-002.xlsx` (Table 3-2 — source of support for postdocs by broad field, 2023) |
+| `352b36340aac4f57e431062f08833674869e23e5f32867c265f8c4f87f5b007b` | 10,976 | `nsf25317-tab003-004.xlsx` (Table 3-4 — detailed federal source for postdocs by broad field, 2023) |
+| `6828c2ce66d007fb35a5fa114ec75c24dfa6e0da4171817c97f157d301c333c0` | 31,598 | `nsf25317-tab004-003.xlsx` (Table 4-3 — master's & doctoral students by enrollment intensity, 2023) |
+
 ## Regeneration
 
 To recompute the checksum list (Windows PowerShell):
