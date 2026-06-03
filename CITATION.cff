@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use quadrivium's harmonized panels in research, please cite as below."
 title: "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data"
 type: dataset
-version: "3.0.0"
+version: "4.0.0"
 license: CC-BY-4.0
 repository-code: "https://github.com/QuinnyXu/quadrivium"
 authors:
@@ -14,7 +14,7 @@ abstract: >-
   decomposed into named, quantified components (real growth, definitional change,
   population expansion, bounded residual), and both are published with
   documentation a cold reader can use without misreading the discontinuity.
-  Version 3.0 contains two datasets joined into one integrated object. (a) HERD —
+  Version 4.0 contains three datasets joined into one integrated object. (a) HERD —
   NSF Higher Education Research and Development survey data (FY 1972–2024) across
   the 2010 instrument redesign: a 50-year field-level R&D expenditure panel
   (FY 1975–2024), a Q15/Q16 research-personnel panel (FY 2022–2024), and a Q4/Q5
@@ -24,14 +24,26 @@ abstract: >-
   higher-education institutions, drawn from the NSF Survey of Federal Science and
   Engineering Support to Universities, Colleges, and Nonprofit Institutions and
   carrying a native IPEDS UnitID; this is the funding-IN face (federal S&E dollars
-  committed to individual higher-education institutions). The value of the database is the integrated
-  whole: HERD and Federal S&E Support are linked on the funding-IN ↔
-  expenditure-OUT axis via the cross-survey institution-identity spine, so funding
-  committed to an institution can be read against R&D it spent. The funding-IN ↔
+  committed to individual higher-education institutions). (c) GSS — NSF Survey of
+  Graduate Students and Postdoctorates in Science and Engineering (FY 1972–2024),
+  carrying a native IPEDS UnitID across all 53 years: three long-format panels
+  (graduate-student federal support by mechanism and federal agency; enrollment by
+  degree level, gender, and race; postdoctoral and non-faculty-researcher counts);
+  this is the human-capital face — the federally-supported graduate students and
+  postdocs that research funding trains. The value of the database is the integrated
+  whole: HERD (expenditure-OUT), Federal S&E Support (funding-IN), and GSS
+  (human-capital) are linked on the institution-year hub via the cross-survey
+  institution-identity spine, so funding committed to an institution can be read
+  against the R&D it spent and the researchers it trained. The funding-IN ↔
   expenditure-OUT join carries documented misalignments (federal-obligation
   fiscal-year basis vs. institution reporting-year basis, and institutional-grain
   differences); see the methods notes for the decomposition. Each dataset is
-  validated against published NSF/NCSES ground truth.
+  validated against published NSF/NCSES ground truth (GSS reproduces published
+  federal graduate-support counts for all 49 years FY1975–2023 with zero
+  mismatches). GSS field names are provisional in v4.0: reconstructed by
+  count-matching to published NSF totals (exact for the 91 of 131 codes active in
+  2023; field_coarse is Science / Engineering / Health super-broad only; ~40
+  historical-only codes left NULL pending the NCSES field-code reference).
 keywords:
   - higher education
   - research and development
@@ -46,6 +58,12 @@ keywords:
   - Federal S&E Support
   - Survey of Federal Science and Engineering Support to Universities, Colleges, and Nonprofit Institutions
   - research funding
+  - GSS
+  - Survey of Graduate Students and Postdoctorates in Science and Engineering
+  - graduate students
+  - postdoctoral researchers
+  - research workforce
+  - human capital
 identifiers:
   - type: doi
     value: "10.5281/zenodo.20404785"

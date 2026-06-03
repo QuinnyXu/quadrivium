@@ -2,7 +2,7 @@
 
 Open-source harmonization of U.S. higher-education survey data into reproducible analytical panels.
 
-The current scope is two integrated datasets: **NSF HERD** (Higher Education Research and Development survey, FY 1972–2024) — the R&D expenditure-OUT face — and **Federal S&E Support** (NSF Survey of Federal Science and Engineering Support to Universities, Colleges, and Nonprofit Institutions, FY 1971–2023) — the federal funding-IN face — joined on the institution-year via a cross-survey identity spine. The roadmap continues with NSF GSS (dataset #3) and the IPEDS IC snapshot (dataset #4), then other NCSES surveys.
+The current scope is three integrated datasets: **NSF HERD** (Higher Education Research and Development survey, FY 1972–2024) — the R&D expenditure-OUT face; **Federal S&E Support** (NSF Survey of Federal Science and Engineering Support to Universities, Colleges, and Nonprofit Institutions, FY 1971–2023) — the federal funding-IN face; and **NSF GSS** (Survey of Graduate Students and Postdoctorates in Science and Engineering, FY 1972–2024) — the human-capital face (the federally-supported graduate students and postdocs research funding trains) — joined on the institution-year via a cross-survey identity spine and GSS's native IPEDS UnitID, completing the funding → people → productivity picture. The roadmap continues with the IPEDS IC snapshot (dataset #4), then other NCSES surveys.
 
 ## What makes this different
 
@@ -25,6 +25,9 @@ This is not a bridge across discontinuities. It is the discipline of making oper
 - **`data/harmonized/herd_personnel.parquet`** — Q15 headcount + Q16 FTE personnel panel for FY 2022–2024 (the microdata-bearing years; NCSES Data Table 26 publishes institution totals for FY 2020–2024, but FY 2020–2021 are aggregate-only, with no per-institution microdata). Carries no `quality_flag` column — a documented imputation-provenance asymmetry with the financial panel (see [`docs/methods_notes/herd_panel_etl_scoping.md`](docs/methods_notes/herd_panel_etl_scoping.md) §12).
 - **`data/harmonized/fedsupport_obligations.parquet`** — Federal S&E Support full-series long panel (FY 1971–2023): federal S&E obligations by department × agency × broad/detailed activity × institution × type × state, with a native IPEDS UnitID and a `na_*`/`no_match`/`matched` status column. All universes (higher-ed / nonprofit / FFRDC) are carried; filter via `institution_type`.
 - **`data/harmonized/fedsupport_institution_year.parquet`** — HERD-join-ready aggregate: higher-ed (academic + consortium), matched-UNITID, aggregated to `(fiscal_year, ipeds_unitid)` with R&D / S&E-support / total obligation columns. R&D-broad is the like-for-like counterpart to HERD federal R&D expenditure. See the discontinuity methods note [`docs/methods_notes/fedsupport/discontinuities.md`](docs/methods_notes/fedsupport/discontinuities.md).
+- **`data/harmonized/gss_support.parquet`** — GSS funding-of-human-capital face: full-time graduate students by support mechanism × federal agency × federal/nonfederal, FY 1972–2024, native IPEDS UnitID. The direct join to HERD/FedSupport federal agencies (NIH, NSF, DOD, DOE, USDA, NASA).
+- **`data/harmonized/gss_race.parquet`** — GSS enrollment by enrollment-status × degree level × gender × race, FY 1972–2024 (OMB-1997 race taxonomy pre-bridged across the 2017 redesign).
+- **`data/harmonized/gss_pd_nfr.parquet`** — GSS postdoctoral appointees and doctorate-holding non-faculty researchers (support, demographics, degree, citizenship); carries a `measure_group` discriminator (the source sheet is overlapping marginal tables — sum within a group, never across). See the GSS methods note [`docs/methods_notes/gss/reconstructive_harmonization_gss.md`](docs/methods_notes/gss/reconstructive_harmonization_gss.md) and its three boundary decompositions (2017 / 1984–87 / 2014). **GSS field names are provisional** (count-matched; 91/131 codes; `field_coarse` = Science/Engineering/Health only; ~40 historical codes NULL pending the NCSES field-code reference).
 
 Companion validation reports in `validation/reports/` carry the reconciliation against published NSF / NCSES ground truth.
 
@@ -38,7 +41,13 @@ uv run python etl/build_herd_panel.py             # rebuild HERD financial + att
 uv run python etl/build_herd_personnel.py         # rebuild HERD personnel parquet
 uv run python etl/build_fedsupport_obligations.py # rebuild Federal S&E Support panels
 uv run python etl/build_fedsupport_identity_spine.py  # rebuild the cross-survey identity spine
+uv run python etl/acquire_gss.py                  # convert GSS zips -> CSV (acquisition)
+uv run python etl/build_gss_support.py            # rebuild GSS support / race / pd_nfr panels
+uv run python etl/build_gss_race.py
+uv run python etl/build_gss_pd_nfr.py
 ```
+
+The GSS panel builds read the committed crosswalks under `crosswalks/gss/` (column maps + `field_code_map.csv`); see [`data/harmonized/MANIFEST.md`](data/harmonized/MANIFEST.md) for the full GSS regeneration order.
 
 Requirements: Python 3.12 and `uv` (installed locally; this repo pins `uv` 0.11.8 in the lockfile and runtime deps to `duckdb==1.5.2` + `pypdf==6.10.2`).
 
@@ -92,7 +101,7 @@ quadrivium/
 
 Quadrivium is at **Stage 1** of a three-stage trajectory:
 
-- **Stage 1 (current) — open datasets.** HERD harmonization (current). Future migrations: IPEDS, NSF GSS, other NCSES surveys. Each migration applies the Reconstructive Harmonization methodology to that survey's discontinuities; the schema and validation patterns adapt to the survey's structure, the methodology does not.
+- **Stage 1 (current) — open datasets.** HERD, Federal S&E Support, and NSF GSS harmonized (current). Future migrations: the IPEDS IC snapshot (the authoritative-identity spine backfill), then other NCSES surveys. Each migration applies the Reconstructive Harmonization methodology to that survey's discontinuities; the schema and validation patterns adapt to the survey's structure, the methodology does not.
 - **Stage 2 (planned) — platform.** Interactive query and comparative-panel surface on top of the harmonized data.
 - **Stage 3 (planned) — commercial analytics.** Analytics built on the platform.
 
@@ -109,7 +118,7 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
 
 **Plain text:**
 
-> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data.* Version 2.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0. Version 2.0 contains two datasets — HERD (R&D expenditure-OUT panels) and Federal S&E Support (federal funding-IN) — joined via the cross-survey institution-identity spine.
+> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data.* Version 4.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0. Version 4.0 contains three datasets — HERD (R&D expenditure-OUT panels), Federal S&E Support (federal funding-IN), and NSF GSS (graduate-student & postdoc human-capital, FY 1972–2024) — joined on the institution-year via the cross-survey institution-identity spine. GSS field names are provisional (count-matched; see `CITATION.cff` and the GSS methods note).
 
 **BibTeX:**
 
