@@ -390,11 +390,18 @@ def _load_discipline_fine_crosswalk(
     1973-1974 carry the same fingerprint shape but are carved out of
     the panel per HD 2.4.b round 1 Vision verdict 2026-05-10 Category II
     option (a)).
+
+    The projection is SELECT DISTINCT because seven era-B Q11 labels
+    (aerospace, electrical, five Geosciences) carry two crosswalk rows
+    with split year ranges (2010-2015, 2016-2023) and an identical
+    mapping. Without the DISTINCT, the year-range-blind join fans out
+    those rows x2 (the pre-v4.0.1 duplicate-row defect). Stage 9
+    assertion 11 guards the panel grain.
     """
     con.execute(
         f"""
         CREATE OR REPLACE TEMP TABLE _xwalk_discipline_fine AS
-        SELECT
+        SELECT DISTINCT
             era,
             raw_row_label,
             discipline_fine,
@@ -1894,6 +1901,37 @@ def assert_panel_invariants(
             "estimated < imputed < reported). The propagation rule "
             "is preserved by construction; assertion fail indicates "
             f"integration bug:\n{sample}"
+        )
+
+    # Assertion 11: panel grain is unique. No two rows share
+    # (institution_id, year, discipline_fine, expenditure_type,
+    # source_class, form_type, source_questionnaire_no). Guards the
+    # crosswalk fan-out defect (split-year-range label rows joined
+    # without year filtering duplicated 7 era-B Q11 labels).
+    bad_11 = con.execute(
+        """
+        SELECT institution_id, year, discipline_fine, expenditure_type,
+               source_class, form_type, source_questionnaire_no,
+               COUNT(*) AS n
+        FROM _stage9_panel
+        GROUP BY ALL
+        HAVING COUNT(*) > 1
+        ORDER BY year, institution_id
+        LIMIT 20
+        """
+    ).fetchall()
+    if bad_11:
+        sample = "\n".join(
+            f"  inst={r[0]!r} year={r[1]} disc={r[2][:30]!r} "
+            f"type={r[3]!r} src={r[4]!r} form={r[5]!r} qno={r[6]!r} n={r[7]}"
+            for r in bad_11
+        )
+        raise RuntimeError(
+            "Stage 9 assertion 11: duplicate rows at the panel grain "
+            "(institution_id, year, discipline_fine, expenditure_type, "
+            "source_class, form_type, source_questionnaire_no). Likely "
+            "a crosswalk fan-out (a raw label mapped by more than one "
+            f"crosswalk row):\n{sample}"
         )
 
     # All assertions pass.
