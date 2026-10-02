@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use quadrivium's harmonized panels in research, please cite as below."
 title: "Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data"
 type: dataset
-version: "4.0.0"
+version: "4.0.1"
 license: CC-BY-4.0
 repository-code: "https://github.com/QuinnyXu/quadrivium"
 authors:
@@ -44,6 +44,17 @@ abstract: >-
   count-matching to published NSF totals (exact for the 91 of 131 codes active in
   2023; field_coarse is Science / Engineering / Health super-broad only; ~40
   historical-only codes left NULL pending the NCSES field-code reference).
+  Version 4.0.1 corrects a defect in the HERD financial panel
+  (herd_panel.parquet) present in v1.0.0-v4.0.0: 43,306 exact duplicate rows
+  in FY2010-2023, caused by a year-range-blind crosswalk join that doubled
+  seven era-B labels (aerospace, electrical engineering, and the five
+  Geosciences rows). Geosciences field totals were double-counted in
+  FY2010-2023 (e.g., FY2023 $8.07B vs the corrected $4.04B), and
+  electrical/aerospace engineering sub-field totals were inflated;
+  Engineering-all, Computer and information sciences, institution-level
+  totals, FY2024, and the attribute, personnel, Federal S&E Support and GSS
+  panels are unaffected. Users of v4.0.0 or earlier should re-pull
+  herd_panel.parquet.
 keywords:
   - higher education
   - research and development
