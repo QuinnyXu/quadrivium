@@ -7,6 +7,8 @@
 
 ---
 
+> **Erratum (v4.0.1, 2026-10-01).** `herd_panel.parquet` in v1.0.0-v4.0.0 contained 43,306 exact duplicate rows in FY2010-2023: a year-range-blind crosswalk join doubled seven era-B labels (aerospace, electrical engineering, and the five Geosciences rows). Geosciences totals were double-counted in FY2010-2023, which inflated the apparent FY2009->2010 Geosciences jump ($2.92B -> $5.97B; corrected $2.92B -> $2.99B), and electrical/aerospace sub-field totals were inflated. The decomposition and residual analysis in this note (sections 2-3, Appendices D-G) were computed by the HD 2.1.b spikes, not from the deposited panel, and are unaffected; national and institution-level totals are unchanged. Details: `validation/reports/herd_panel_duplicate_fanout_fix.md`.
+
 ## 1. The 2010 cliff: a silent break in 38 years of field-level data
 
 **Figure 0.** *HERD survey question count by year, 1972–2024.*

@@ -118,7 +118,7 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
 
 **Plain text:**
 
-> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data.* Version 4.0.0. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0. Version 4.0 contains three datasets — HERD (R&D expenditure-OUT panels), Federal S&E Support (federal funding-IN), and NSF GSS (graduate-student & postdoc human-capital, FY 1972–2024) — joined on the institution-year via the cross-survey institution-identity spine. GSS field names are provisional (count-matched; see `CITATION.cff` and the GSS methods note).
+> Quadrivium contributors (2026). *Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data.* Version 4.0.1. Zenodo. DOI: [10.5281/zenodo.20404785](https://doi.org/10.5281/zenodo.20404785) (concept DOI, all versions; see `CITATION.cff`). License: CC-BY-4.0. Version 4.0 contains three datasets — HERD (R&D expenditure-OUT panels), Federal S&E Support (federal funding-IN), and NSF GSS (graduate-student & postdoc human-capital, FY 1972–2024) — joined on the institution-year via the cross-survey institution-identity spine. GSS field names are provisional (count-matched; see `CITATION.cff` and the GSS methods note).
 
 **BibTeX:**
 
@@ -127,10 +127,10 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
   author    = {{Quadrivium contributors}},
   title     = {{Quadrivium: Reconstructive Harmonization of U.S. Higher-Education Survey Data}},
   year      = {2026},
-  version   = {2.0.0},
+  version   = {4.0.1},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.20404785},
-  note      = {Concept DOI (all versions); v4.0.0 version DOI 10.5281/zenodo.20530949; v3.0.0 version DOI 10.5281/zenodo.20514381; v2.0.0 version DOI 10.5281/zenodo.20469884; v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
+  note      = {Concept DOI (all versions); v4.0.1 corrects a HERD duplicate-row defect in v1.0.0-v4.0.0 (version DOI minted at release; see CITATION.cff); v4.0.0 version DOI 10.5281/zenodo.20530949; v3.0.0 version DOI 10.5281/zenodo.20514381; v2.0.0 version DOI 10.5281/zenodo.20469884; v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
 }
 ```
 
