@@ -130,7 +130,7 @@ If you use quadrivium's harmonized panels in research, please cite the deposit a
   version   = {4.0.1},
   publisher = {Zenodo},
   doi       = {10.5281/zenodo.20404785},
-  note      = {Concept DOI (all versions); v4.0.1 corrects a HERD duplicate-row defect in v1.0.0-v4.0.0 (version DOI minted at release; see CITATION.cff); v4.0.0 version DOI 10.5281/zenodo.20530949; v3.0.0 version DOI 10.5281/zenodo.20514381; v2.0.0 version DOI 10.5281/zenodo.20469884; v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
+  note      = {Concept DOI (all versions); v4.0.1 version DOI 10.5281/zenodo.23093309 (corrects a HERD duplicate-row defect in v1.0.0-v4.0.0); v4.0.0 version DOI 10.5281/zenodo.20530949; v3.0.0 version DOI 10.5281/zenodo.20514381; v2.0.0 version DOI 10.5281/zenodo.20469884; v1.0.0 (HERD-only) version DOI 10.5281/zenodo.20404786. Data CC-BY-4.0; code MIT.}
 }
 ```
 
